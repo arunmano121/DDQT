@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # IO modules to help with reading in Matlab data
 import scipy.io
 # plotting tools
@@ -17,159 +19,33 @@ from sklearn.ensemble import IsolationForest
 from point_in_convex_polygon import Point, is_within_polygon
 
 
-def feature_perf(iso, t_stamps, d1, d2, d3):
-    '''\nQuantification of defect detection of features'''
-
-    # mult_arr holds the multiplier factor to add computations only in the
-    # quadrant containing the defect
-    mult_arr = np.zeros((len(t_stamps), iso.shape[1], iso.shape[2]))
-
-    # boundaries of different quadrants
-    o_0 = int(394/360*0)
-    o_90 = int(394/360*90)
-    o_180 = int(394/360*180)
-    o_270 = int(394/360*270)
-    o_360 = int(394/360*360)
-
-    mult_arr[0, :, o_90:o_180] = 1  # D1 is in quad 2 between 90 and 180
-    mult_arr[1, :, o_270:o_360] = 1  # D2 is in quad 4 between 270 and 360
-    mult_arr[2, :, o_0:o_90] = 1  # D3 is in quad 1 between 0 and 90
-
-    # y_truth holds the true labels of the defective areas
-    # location of defects are labeled with 1
-    y_truth = np.zeros(iso.shape)
-    # location of D1
-    y_truth[:, d1['r_sel'], d1['o_sel']] = 1
-    # location of D2
-    y_truth[:, d2['r_sel'], d2['o_sel']] = 1
-    # location of D3
-    y_truth[:, d3['r_sel'], d3['o_sel']] = 1
-
-    # cumulative sum of performance across the three defects
-    j_perf = 0
-
-    # counter holds the defect number and t_idx contains the time index
-    # of the defect
-    # selecting features based on performance over the 3 defects in total
-    for counter, t_idx in enumerate(t_stamps):
-        # Compute ROC curve and ROC area for outliers computed using
-        # Isolation Forest
-        fpr_iso, tpr_iso, _ = \
-            roc_curve(
-                (y_truth[t_idx, :, :] * mult_arr[counter, :, :]).ravel(),
-                (iso[t_idx, :, :] * mult_arr[counter, :, :]).ravel())
-        auc_iso = auc(fpr_iso, tpr_iso)
-
-        j_perf += auc_iso
-
-    # selecting features based on performance over individual defect
-    # counter ranges from 0-2 corresponding to D1-D3
-    # counter = 2
-    # t_idx = t_stamps[counter]
-    # # Compute ROC curve and ROC area for outliers computed using
-    # # Isolation Forest
-    # fpr_iso, tpr_iso, _ = \
-    #     roc_curve(
-    #         (y_truth[t_idx, :, :] * mult_arr[counter, :, :]).ravel(),
-    #         (iso[t_idx, :, :] * mult_arr[counter, :, :]).ravel())
-    # auc_iso = auc(fpr_iso, tpr_iso)
-
-    # j_perf += auc_iso
-
-    return j_perf
-
-
-def feature_selection(features, t_stamps, mat, d1, d2, d3):
-    '''\nSelect features based on greedy forward selection'''
-
-    # feature performance measurement is performed by measuring the ROC of
-    # feature across the three defects d1, d2 and d3. At each stage, the
-    # best feature is added to the selection pool and the incremental
-    # benefit of adding additional features is verified
-
-    # a temporary place-holder dictionary to hold the current feature along
-    # with the selected features
-    temp = {}
-
-    # selected features
-    sel_features = {}
-
-    # maximum performance of feature within one round
-    max_perf_round = 0.0
-    max_prev_perf_round = 0.0
-
-    for i in range(len(features)):
-        # iterating through the different features
-        for feature in features.keys():
-            if feature not in sel_features.keys():
-                j_feature = {}
-                j_feature[feature] = features[feature]
-                temp = combine_features([sel_features, j_feature])
-
-                iso = fit_isolationforest_model(temp, t_stamps, pca=False,
-                                                pca_var=0.95)
-                iso = scale_frames(iso, t_stamps)
-                j_perf = feature_perf(iso, t_stamps, d1, d2, d3)
-
-                # if current feature exceeds performance of current maximum
-                if j_perf > max_perf_round:
-                    # set max_perf to j_perf
-                    max_perf_round = j_perf
-                    j_best_feature = feature
-
-        # only if the performance of the current round exceeds the previous
-        # round, update the features else break out of feature selection
-        if max_perf_round > max_prev_perf_round:
-            sel_features[j_best_feature] = features[j_best_feature]
-
-            print("Round %d: Selected Features: %s"
-                  % (i, sel_features.keys()))
-
-            max_prev_perf_round = max_perf_round
-        else:
-            break
-
-    return sel_features
-
-
-def annotate_plots(ax, d, title):
+def annotate_plots(ax, defs):
     '''\nAnnotate charts with locations of defects'''
 
-    ax.plot([d['o1'], d['o1'], d['o2'], d['o2'], d['o1']],
-            [d['r1'], d['r2'], d['r2'], d['r1'], d['r1']], color='red')
-    ax.annotate(title, xy=(d['o1'], int(0.5*d['r1'] + 0.5*d['r2'])))
+    # total number of defects
+    num_defs = len(defs)
+
+    for i in range(1, num_defs+1):
+        ax.plot(defs[i]['s1_vertices'], defs[i]['s2_vertices'], color='red')
+        ax.annotate(defs[i]['name'], xy=(np.mean(defs[i]['s1_vertices']),
+                                         np.mean(defs[i]['s2_vertices'])))
 
     return
 
 
-def defect_detection_metrics(mat, mah, iso, r2, o2, t_stamps, d1, d2, d3,
-                             plot=True):
+def defect_detection_metrics(mat, mah, iso, s1_2d, s2_2d,
+                             defs, t_stamps, t, units, plot=True):
     '''\nQuantification of defect detection'''
 
-    # mult_arr holds the multiplier factor to add computations only in the
-    # quadrant containing the defect
-    mult_arr = np.zeros((len(t_stamps), r2.shape[0], r2.shape[1]))
-
-    # boundaries of different quadrants
-    o_0 = int(394/360*0)
-    o_90 = int(394/360*90)
-    o_180 = int(394/360*180)
-    o_270 = int(394/360*270)
-    o_360 = int(394/360*360)
-
-    mult_arr[0, :, o_90:o_180] = 1  # D1 is in quad 2 between 90 and 180
-    mult_arr[1, :, o_270:o_360] = 1  # D2 is in quad 4 between 270 and 360
-    mult_arr[2, :, o_0:o_90] = 1  # D3 is in quad 1 between 0 and 90
+    # total number of defects
+    num_defs = len(defs)
 
     # y_truth holds the true labels of the defective areas
     # location of defects are labeled with 1
     y_truth = np.zeros(mat.shape)
-    # location of D1
-    y_truth[:, d1['r_sel'], d1['o_sel']] = 1
-    # location of D2
-    y_truth[:, d2['r_sel'], d2['o_sel']] = 1
-    # location of D3
-    y_truth[:, d3['r_sel'], d3['o_sel']] = 1
+
+    for i in range(1, num_defs+1):
+        y_truth[:, defs[i]['s1_sel'], defs[i]['s2_sel']] = 1
 
     # counter holds the defect number and t_idx contains the time index
     # of the defect
@@ -178,8 +54,7 @@ def defect_detection_metrics(mat, mah, iso, r2, o2, t_stamps, d1, d2, d3,
         # Compute ROC curve and ROC area for raw data
         fpr_mat, tpr_mat, _ = \
             roc_curve(
-                (y_truth[t_idx, :, :] * mult_arr[counter, :, :]).ravel(),
-                (mat[t_idx, :, :] * mult_arr[counter, :, :]).ravel())
+                y_truth[t_idx, :, :].ravel(), mat[t_idx, :, :].ravel())
         auc_mat = auc(fpr_mat, tpr_mat)
 
         # index where fpr is closest to 0.02 (2%)
@@ -198,8 +73,7 @@ def defect_detection_metrics(mat, mah, iso, r2, o2, t_stamps, d1, d2, d3,
         # Mahalanobis distance
         fpr_mah, tpr_mah, _ = \
             roc_curve(
-                (y_truth[t_idx, :, :] * mult_arr[counter, :, :]).ravel(),
-                (mah[t_idx, :, :] * mult_arr[counter, :, :]).ravel())
+                y_truth[t_idx, :, :].ravel(), mah[t_idx, :, :].ravel())
         auc_mah = auc(fpr_mah, tpr_mah)
 
         # index where fpr is closest to 0.02 (2%)
@@ -218,8 +92,7 @@ def defect_detection_metrics(mat, mah, iso, r2, o2, t_stamps, d1, d2, d3,
         # Isolation Forest
         fpr_iso, tpr_iso, _ = \
             roc_curve(
-                (y_truth[t_idx, :, :] * mult_arr[counter, :, :]).ravel(),
-                (iso[t_idx, :, :] * mult_arr[counter, :, :]).ravel())
+                y_truth[t_idx, :, :].ravel(), iso[t_idx, :, :].ravel())
         auc_iso = auc(fpr_iso, tpr_iso)
 
         # index where fpr is closest to 0.02 (2%)
@@ -249,37 +122,30 @@ def defect_detection_metrics(mat, mah, iso, r2, o2, t_stamps, d1, d2, d3,
 
         # plot results based on plot boolean flag
         if plot:
-            fig, ax = plt.subplots(subplot_kw=dict(projection='polar'),
-                                   nrows=1, ncols=3)
+            fig, ax = plt.subplots(nrows=1, ncols=3)
 
-            fig.suptitle('Result of Outlier analysis at %d$\\mu$S'
-                         % (t_idx*0.1))
+            fig.suptitle('Result of Outlier analysis at %0.1f%s'
+                         % (t[t_idx], units['t_units']))
 
             # raw data
-            cs = ax[0].contourf(o2, r2, mat[t_idx, :, :])
+            cs = ax[0].contourf(s1_2d, s2_2d, mat[t_idx, :, :])
             ax[0].plot(0, 0)
             ax[0].set(title='Raw data')
-            annotate_plots(ax[0], d1, 'D1')
-            annotate_plots(ax[0], d2, 'D2')
-            annotate_plots(ax[0], d3, 'D3')
+            annotate_plots(ax[0], defs)
             fig.colorbar(cs, ax=ax[0], shrink=0.33)
 
             # outliers computed using Mahalanobis distance
-            cs = ax[1].contourf(o2, r2, mah[t_idx, :, :])
+            cs = ax[1].contourf(s1_2d, s2_2d, mah[t_idx, :, :])
             ax[1].plot(0, 0)
             ax[1].set(title='Outliers using Mahalanobis distance')
-            annotate_plots(ax[1], d1, 'D1')
-            annotate_plots(ax[1], d2, 'D2')
-            annotate_plots(ax[1], d3, 'D3')
+            annotate_plots(ax[1], defs)
             fig.colorbar(cs, ax=ax[1], shrink=0.33)
 
             # outliers computed using Isolation Forest
-            cs = ax[2].contourf(o2, r2, iso[t_idx, :, :])
+            cs = ax[2].contourf(s1_2d, s2_2d, iso[t_idx, :, :])
             ax[2].plot(0, 0)
             ax[2].set(title='Isolation Forest')
-            annotate_plots(ax[2], d1, 'D1')
-            annotate_plots(ax[2], d2, 'D2')
-            annotate_plots(ax[2], d3, 'D3')
+            annotate_plots(ax[2], defs)
             fig.colorbar(cs, ax=ax[2], shrink=0.33)
 
             plt.tight_layout()
@@ -322,7 +188,8 @@ def defect_detection_metrics(mat, mah, iso, r2, o2, t_stamps, d1, d2, d3,
             ax[1].set_xlabel('False Positive Rate')
             ax[1].set_ylabel('True Positive Rate')
 
-            plt.title('ROC curve - Time: %d$\\mu$S' % (t_idx*0.1))
+            plt.title('ROC curve - Time: %0.1f%s'
+                      % (t[t_idx], units['t_units']))
             plt.show()
 
     return
@@ -475,46 +342,22 @@ def combine_features(feature_list):
     return features
 
 
-def visualize_features(mat, features, r2, o2, feature, t_idx):
+def visualize_features(mat, features, s1_2d, s2_2d, feature,
+                       t_idx, t, units):
     '''\nVisualize computed features'''
 
-    fig, ax = plt.subplots(subplot_kw=dict(projection='polar'),
-                           nrows=1, ncols=2)
+    fig, ax = plt.subplots(nrows=1, ncols=2)
 
-    fig.suptitle('Comparison of raw signal and feature at %d$\\mu$S'
-                 % (t_idx*0.1))
+    fig.suptitle('Comparison of raw signal and feature at %0.1f%s'
+                 % (t[t_idx], units['t_units']))
 
     # contour plot of raw signal
-    ax[0].contourf(o2, r2, mat[t_idx, :, :])
-    ax[0].plot(0, 0)
+    ax[0].contourf(s1_2d, s2_2d, mat[t_idx, :, :])
     ax[0].set(title='Raw signal')
 
     # contour plot of feature
-    ax[1].contourf(o2, r2, features[feature][t_idx, :, :])
-    ax[1].plot(0, 0)
+    ax[1].contourf(s1_2d, s2_2d, features[feature][t_idx, :, :])
     ax[1].set(title='Feature - ' + feature)
-
-    plt.tight_layout()
-    plt.show()
-
-    fig, ax = plt.subplots(nrows=1, ncols=2)
-    fig.suptitle('Radial scan')
-
-    o = 300
-    o_idx = int(394/360*o)
-
-    # radial scan of raw signal
-    ax[0].plot(r2[:, o_idx], mat[t_idx, :, o_idx])
-    ax[0].set(xlabel='Radius [mm]', ylabel='Signal',
-              title='Theta=%0.1f$^\\circ$' % (o))
-    ax[0].grid()
-
-    # radial scan of feature
-    ax[1].plot(r2[:, o_idx], features[feature]
-               [t_idx, :, o_idx])
-    ax[1].set(xlabel='Radius [mm]', ylabel='Feature',
-              title='Theta=%0.1f$^\\circ$' % (o))
-    ax[1].grid()
 
     plt.tight_layout()
     plt.show()
@@ -523,8 +366,7 @@ def visualize_features(mat, features, r2, o2, feature, t_idx):
 
 
 def compute_features_wav(mat, t_stamps):
-    '''\nCalculates wavelet transformed and reconstructed features
-    at every location'''
+    '''\nCalculates wavelet transformed features at every location'''
 
     # initialize an empty dictionary to hold and return all features
     features_wav = {}
@@ -739,53 +581,6 @@ def compute_features_sd(mat, t_stamps):
     return features_sd
 
 
-def id_timestamps(features, d1, d2, d3):
-    '''Calculates time stamps of defects using correlation among features'''
-
-    f1_d1 = np.mean(features['t_grad'][:, d1['r_sel'], d1['o_sel']],
-                    axis=(1))
-    f2_d1 = np.mean(features['r_grad'][:, d1['r_sel'], d1['o_sel']],
-                    axis=(1))
-    cor_d1 = np.convolve(f1_d1, f2_d1, 'same')
-
-    f1_d2 = np.mean(features['t_grad'][:, d2['r_sel'], d2['o_sel']],
-                    axis=(1))
-    f2_d2 = np.mean(features['r_grad'][:, d2['r_sel'], d2['o_sel']],
-                    axis=(1))
-    cor_d2 = np.convolve(f1_d2, f2_d2, 'same')
-
-    f1_d3 = np.mean(features['t_grad'][:, d3['r_sel'], d3['o_sel']],
-                    axis=(1))
-    f2_d3 = np.mean(features['r_grad'][:, d3['r_sel'], d3['o_sel']],
-                    axis=(1))
-    cor_d3 = np.convolve(f1_d3, f2_d3, 'same')
-
-    # fig, ax = plt.subplots(nrows=1, ncols=3)
-    # fig.suptitle('Correlation for features at defects')
-
-    # ax[0].plot(cor_d1)
-    # ax[0].set(xlabel='Coordinate', ylabel='Correlation', title='D1')
-    # ax[0].grid()
-
-    # ax[1].plot(cor_d2)
-    # ax[1].set(xlabel='Coordinate', ylabel='Correlation', title='D2')
-    # ax[1].grid()
-
-    # ax[2].plot(cor_d3)
-    # ax[2].set(xlabel='Coordinate', ylabel='Correlation', title='D3')
-    # ax[2].grid()
-
-    # plt.tight_layout()
-    # plt.show()
-
-    t_stamps = [np.argmax(cor_d1), np.argmax(cor_d2), np.argmax(cor_d3)]
-
-    print('Coordinates of max correlation at defect D1: %d, D2: %d, D3: %d'
-          % (t_stamps[0], t_stamps[1], t_stamps[2]))
-
-    return t_stamps
-
-
 def compute_features_grad(mat):
     '''\nCalculates spatial and temporal gradients'''
 
@@ -794,137 +589,91 @@ def compute_features_grad(mat):
 
     # first derivative
     features_grad['t_grad'] = np.roll(mat, -1, axis=0) - mat
-    features_grad['r_grad'] = np.roll(mat, -1, axis=1) - mat
-    features_grad['o_grad'] = np.roll(mat, -1, axis=2) - mat
+    features_grad['s1_grad'] = np.roll(mat, -1, axis=1) - mat
+    features_grad['s2_grad'] = np.roll(mat, -1, axis=2) - mat
 
     # second derivative
-    features_grad['t2_grad'] = \
+    features_grad['t_grad2'] = \
         np.roll(features_grad['t_grad'], -1, axis=0)\
         - features_grad['t_grad']
-    features_grad['r2_grad'] = np.roll(features_grad['r_grad'], -1, axis=1)\
-        - features_grad['r_grad']
-    features_grad['o2_grad'] = \
-        np.roll(features_grad['o_grad'], -1, axis=2) - \
-        features_grad['o_grad']
+    features_grad['s1_grad2'] = np.roll(features_grad['s1_grad'], -1,
+                                        axis=1)\
+        - features_grad['s1_grad']
+    features_grad['s2_grad2'] = \
+        np.roll(features_grad['s2_grad'], -1, axis=2) - \
+        features_grad['s2_grad']
 
     return features_grad
 
 
-def define_defects(r, o):
+def define_defects(s1, s2, defs_coord, def_names):
     '''\nDefine coordinates of defects'''
 
-    # initialize empty dictionary to hold the theta and radial coordinates
-    d1 = {}
-    d2 = {}
-    d3 = {}
+    # initialize empty dictionary to hold defect coordinates
+    defs = {}
 
-    # d['o_idx'] contains the angular extent of the defect
-    # d['r_idx'] contains the radial extent of the defect
-    # d['polygon'] contains the Point object definition of the defect
-    # d['r_sel'] contains the selected radius coordinates of the defect
-    # d['o_sel'] contains the selected angular coordinates of the defect
+    # as many defects can be setup within the defects dictionary.
+    # each defect key will be an unique identifier
 
-    # D1: 186-196mm 125-135deg
-    d1['o_idx1'] = int(394/360*125)
-    d1['o_idx2'] = int(394/360*135)
-    d1['r_idx1'] = 186 - 20
-    d1['r_idx2'] = 196 - 20
-    d1['o1'] = o[d1['o_idx1']]
-    d1['o2'] = o[d1['o_idx2']]
-    d1['r1'] = r[d1['r_idx1']]
-    d1['r2'] = r[d1['r_idx2']]
+    # defs[n:{...}] contains the parameters of defect 'n'
 
-    d1['polygon'] = [Point(r*np.cos(theta), r*np.sin(theta))
-                     for (r, theta) in
-                     [(d1['r1'], d1['o1']), (d1['r1'], d1['o2']),
-                      (d1['r2'], d1['o2']), (d1['r2'], d1['o1'])]]
+    # defs[n:{'polygon':}] contains the defect's Point object definition
+    # defs[n:{'s1_sel':}] contains the selected s1 coordinates of defect
+    # defs[n:{'s2_sel':}] contains the selected s2 coordinates of defect
+    # defs[n:{'s1_vertices':}] contains the s1 vertices of defect
+    # defs[n:{'s2_vertices':}] contains the s2 vertices of defect
+    # defs[n:{'name':}] contains the names of defect
 
-    d1['r_sel'] = []
-    d1['o_sel'] = []
+    # iterate through the defects
+    for i in range(1, len(defs_coord) + 1):
+        defs[i] = {}
 
-    # D2: 150-160mm 295-305deg
-    d2['o_idx1'] = int(394/360*295)
-    d2['o_idx2'] = int(394/360*305)
-    d2['r_idx1'] = 150 - 20
-    d2['r_idx2'] = 160 - 20
-    d2['o1'] = o[d2['o_idx1']]
-    d2['o2'] = o[d2['o_idx2']]
-    d2['r1'] = r[d2['r_idx1']]
-    d2['r2'] = r[d2['r_idx2']]
+        defs[i]['polygon'] = [Point(x, y) for x, y in defs_coord[i-1]]
 
-    d2['polygon'] = [Point(r*np.cos(theta), r*np.sin(theta))
-                     for (r, theta) in
-                     [(d2['r1'], d2['o1']), (d2['r1'], d2['o2']),
-                      (d2['r2'], d2['o2']), (d2['r2'], d2['o1'])]]
+        defs[i]['s1_sel'] = []
+        defs[i]['s2_sel'] = []
 
-    d2['r_sel'] = []
-    d2['o_sel'] = []
+        # extract vertices of defects in s1 and s2 coordinates
+        defs[i]['s1_vertices'], defs[i]['s2_vertices'] = \
+            map(list, zip(*defs_coord[i-1]))
 
-    # D3: 120-130mm 40-50deg
-    d3['o_idx1'] = int(394/360*40)
-    d3['o_idx2'] = int(394/360*50)
-    d3['r_idx1'] = 120 - 20
-    d3['r_idx2'] = 130 - 20
-    d3['o1'] = o[d3['o_idx1']]
-    d3['o2'] = o[d3['o_idx2']]
-    d3['r1'] = r[d3['r_idx1']]
-    d3['r2'] = r[d3['r_idx2']]
+        # add the first element to the tail of dictionary to aid with plots
+        defs[i]['s1_vertices'].append(defs[i]['s1_vertices'][0])
+        defs[i]['s2_vertices'].append(defs[i]['s2_vertices'][0])
 
-    d3['polygon'] = [Point(r*np.cos(theta), r*np.sin(theta))
-                     for (r, theta) in
-                     [(d3['r1'], d3['o1']), (d3['r1'], d3['o2']),
-                      (d3['r2'], d3['o2']), (d3['r2'], d3['o1'])]]
+        defs[i]['name'] = def_names[i-1]
 
-    d3['r_sel'] = []
-    d3['o_sel'] = []
+    # iterate through the spatial coordinates to identify which pixels
+    # belong to defecs
+    for s1_idx in range(len(s1)):
+        for s2_idx in range(len(s2)):
+            p = Point(s1[s1_idx], s2[s2_idx])
 
-    for r_idx in range(len(r)):
-        for o_idx in range(len(o)):
-            p = Point(r[r_idx]*np.cos(o[o_idx]), r[r_idx]*np.sin(o[o_idx]))
+            # iterate through the defects
+            for i in range(1, len(defs)+1):
+                if is_within_polygon(defs[i]['polygon'], p):
+                    defs[i]['s1_sel'].append(s1_idx)
+                    defs[i]['s2_sel'].append(s2_idx)
 
-            if is_within_polygon(d1['polygon'], p):
-                d1['r_sel'].append(r_idx)
-                d1['o_sel'].append(o_idx)
-            elif is_within_polygon(d2['polygon'], p):
-                d2['r_sel'].append(r_idx)
-                d2['o_sel'].append(o_idx)
-            elif is_within_polygon(d3['polygon'], p):
-                d3['r_sel'].append(r_idx)
-                d3['o_sel'].append(o_idx)
-
-    return d1, d2, d3
+    return defs
 
 
-def visualize_spatial_data(mat, t, r2, o2):
-    '''\nVisualize data in polar coordinates'''
+def visualize_spatial_data(mat, t, s1_2d, s2_2d,
+                           t_min_idx, t_max_idx, del_t_idx, units):
+    '''\nVisualize spatial slices of data at certain time stamps'''
 
-    # fig, ax = plt.subplots(subplot_kw=dict(projection='polar'),
-    #                        nrows=2, ncols=3)
-
-    # fig.suptitle('Raw signal')
-
-    # for counter, t in enumerate(range(400, 1000, 100)):
-    #     # iterating across 6 time stamps in steps of 100 micro seconds
-    #     r, c = divmod(counter, 3)
-    #     cs = ax[r, c].contourf(o2, r2, mat[t, :, :])
-    #     ax[r, c].plot(0, 0)
-    #     ax[r, c].set(title='Time stamp: %d$\\mu$S' % (t*0.1))
-    #     fig.colorbar(cs, ax=ax[r, c], shrink=0.5)
-
-    # plt.tight_layout()
-    # plt.show()
-
-    # visualize data between 40 - 90 micro S in steps of 5 micro S
-    for counter, t in enumerate(range(400, 900, 25)):
-        fig, ax = plt.subplots(subplot_kw=dict(projection='polar'),
-                               nrows=1, ncols=1, figsize=(8, 8))
+    # visualize data between t_min_idx - t_max_idx in steps of del_t_idx
+    for t_idx in range(t_min_idx, t_max_idx, del_t_idx):
+        fig, ax = plt.subplots(nrows=1, ncols=1)
 
         fig.suptitle('Raw signal')
 
-        # iterating across 16 time stamps
-        cs = ax.contourf(o2, r2, mat[t, :, :])
+        # iterating across time stamps
+        cs = ax.contourf(s1_2d, s2_2d, mat[t_idx, :, :])
         ax.plot(0, 0)
-        ax.set(title='Time stamp: %d$\\mu$S' % (t*0.1))
+        ax.set(title='Time stamp: %0.1f%s' % (t[t_idx], units['t_units']))
+        ax.set(xlabel='%s' % (units['s1_units']))
+        ax.set(ylabel='%s' % (units['s2_units']))
         fig.colorbar(cs, ax=ax, shrink=0.5)
 
         plt.tight_layout()
@@ -933,48 +682,54 @@ def visualize_spatial_data(mat, t, r2, o2):
     return
 
 
-def visualize_time_series(data, t, r, o):
+def visualize_time_series(data, t, s1, s2, units):
     '''\nPick 4 random spatial coordinates and chart the time-series'''
 
-    # pick 4 random spatial and theta coordinates
-    o_coord = np.random.randint(low=0, high=len(o), size=4)
-    r_coord = np.random.randint(low=0, high=len(r), size=4)
+    # pick 4 random spatial coordinates along s1 and s2 axes
+    s1_coord = np.random.randint(low=0, high=len(s1), size=4)
+    s2_coord = np.random.randint(low=0, high=len(s2), size=4)
 
     # extract time series signals at the four random coordinates
-    s1 = data[:, r_coord[0], o_coord[0]]
-    s2 = data[:, r_coord[1], o_coord[1]]
-    s3 = data[:, r_coord[2], o_coord[2]]
-    s4 = data[:, r_coord[3], o_coord[3]]
+    sig1 = data[:, s1_coord[0], s2_coord[0]]
+    sig2 = data[:, s1_coord[1], s2_coord[1]]
+    sig3 = data[:, s1_coord[2], s2_coord[2]]
+    sig4 = data[:, s1_coord[3], s2_coord[3]]
 
     fig, ax = plt.subplots(nrows=2, ncols=2)
     fig.suptitle('Time series')
 
-    ax[0, 0].plot(t*(1e6), s1)
-    ax[0, 0].set(xlabel='Time [$\\mu$S]', ylabel='Signal',
-                 title='Coordinates: r=%0.1f mm, theta=%0.1f$^\\circ$' %
-                 (r[r_coord[0]], np.degrees(o[o_coord[0]])))
+    ax[0, 0].plot(t, sig1)
+    ax[0, 0].set(xlabel='Time[%s]' % (units['t_units']), ylabel='Signal',
+                 title='s1=%0.1f%s, s2=%0.1f%s' %
+                 (s1[s1_coord[0]], units['s1_units'],
+                  s2[s2_coord[0]], units['s2_units']))
     ax[0, 0].grid()
 
-    ax[1, 0].plot(t*(1e6), s2)
-    ax[1, 0].set(xlabel='Time [$\\mu$S]', ylabel='Signal',
-                 title='Coordinates: r=%0.1f mm, theta=%0.1f$^\\circ$' %
-                 (r[r_coord[1]], np.degrees(o[o_coord[1]])))
+    ax[1, 0].plot(t, sig2)
+    ax[1, 0].set(xlabel='Time[%s]' % (units['t_units']), ylabel='Signal',
+                 title='s1=%0.1f%s, s2=%0.1f%s' %
+                 (s1[s1_coord[1]], units['s1_units'],
+                  s2[s2_coord[1]], units['s2_units']))
     ax[1, 0].grid()
 
-    ax[0, 1].plot(t*(1e6), s3)
-    ax[0, 1].set(xlabel='Time [$\\mu$S]', ylabel='Signal',
-                 title='Coordinates: r=%0.1f mm, theta=%0.1f$^\\circ$' %
-                 (r[r_coord[2]], np.degrees(o[o_coord[2]])))
+    ax[0, 1].plot(t, sig3)
+    ax[0, 1].set(xlabel='Time[%s]' % (units['t_units']), ylabel='Signal',
+                 title='s1=%0.1f%s, s2=%0.1f%s' %
+                 (s1[s1_coord[2]], units['s1_units'],
+                  s2[s2_coord[2]], units['s2_units']))
     ax[0, 1].grid()
 
-    ax[1, 1].plot(t*(1e6), s4)
-    ax[1, 1].set(xlabel='Time [$\\mu$S]', ylabel='Signal',
-                 title='Coordinates: r=%0.1f mm, theta=%0.1f$^\\circ$' %
-                 (r[r_coord[3]], np.degrees(o[o_coord[3]])))
+    ax[1, 1].plot(t, sig4)
+    ax[1, 1].set(xlabel='Time[%s]' % (units['t_units']), ylabel='Signal',
+                 title='s1=%0.1f%s, s2=%0.1f%s' %
+                 (s1[s1_coord[3]], units['s1_units'],
+                  s2[s2_coord[3]], units['s2_units']))
     ax[1, 1].grid()
 
     plt.tight_layout()
     plt.show()
+
+    return
 
 
 def read_matlab_data(dataset, table):
@@ -989,79 +744,102 @@ def main():
     '''\nAll the subroutines will be called from here'''
 
     # load data
-    # print(read_matlab_data.__doc__)
-    mat = read_matlab_data(dataset='rawData1.mat', table='rawData1')
-
-    # trimming data
-    mat = mat[0:1000, :, :]
+    print(read_matlab_data.__doc__)
+    # Example - this assumes a matlab dataset named defect.mat and the
+    # table named rawData inside the dataset
+    dataset = 'sample.mat'
+    tablename = 'rawData1'
+    mat = read_matlab_data(dataset=dataset, table=tablename)
 
     # describe data
-    [t_max, r_max, o_max] = mat.shape
-    print('Shape of the data matrix -  t_max: %d  r_max: %d  theta_max: %d'
-          % (t_max, r_max, o_max))
+    # the input dataset is assumed to contain a time axis and two spatial
+    # coordinates - s1 and s2. Rearrange axes as necessary.
+    [t_max, s1_max, s2_max] = mat.shape
+    print('Shape of the data matrix')
+    print('t_max: %d  s1_max: %d s2_max: %d' % (t_max, s1_max, s2_max))
 
     # scanning parameters
-    t = np.linspace(1, t_max, t_max)*(1e-7)  # in micro seconds
-    r = np.linspace(20, 220, r_max)  # in mm
-    o = np.radians(np.linspace(0, 360, o_max))  # in radians
+    # in this sample code, time axes ranges from t_lb to t_ub over t_max
+    t_lb = 0*1e-1
+    t_ub = t_max*1e-1
+    t = np.linspace(t_lb, t_ub, t_max)
 
-    # polar meshgrid conversion in 2D
-    r2, o2 = np.meshgrid(r, o, indexing='ij')
+    # s1 axis range from s1_lb to s1_ub divided over s1_max steps
+    s1_lb = 0
+    s1_ub = 200
+    s1 = np.linspace(s1_lb, s1_ub, s1_max)
+
+    # s2 axis range from s2_lb to s2_ub divided over s2_max steps
+    s2_lb = 0
+    s2_ub = 360
+    s2 = np.linspace(s2_lb, s2_ub, s2_max)
+
+    # dictionary object to hold the units along the different axis
+    units = {'t_units': '$\\mu$S', 's1_units': 'mm', 's2_units': 'mm'}
+
+    # meshgrid conversion in 2D
+    s1_2d, s2_2d = np.meshgrid(s1, s2, indexing='ij')
 
     # raw data visualization
-    # print(visualize_time_series.__doc__)
-    visualize_time_series(mat, t, r, o)
-    # print(visualize_spatial_data.__doc__)
-    visualize_spatial_data(mat, t, r2, o2)
+    print(visualize_time_series.__doc__)
+    visualize_time_series(mat, t, s1, s2, units)
+
+    print(visualize_spatial_data.__doc__)
+    t_min_idx = 450
+    t_max_idx = 500
+    del_t_idx = 25
+    visualize_spatial_data(mat, t, s1_2d, s2_2d,
+                           t_min_idx, t_max_idx, del_t_idx, units)
 
     # define defects
-    # print(define_defects.__doc__)
-    d1, d2, d3 = define_defects(r, o)
+    print(define_defects.__doc__)
+    # define as many defects as needed
+    # each defect should contain the coordiantes of the vertices
+    # the structure is list of tuples
+    def1 = [(20, 20), (50, 10), (30, 40), (20, 30)]
+    def2 = [(120, 120), (180, 120), (150, 180)]
+    def3 = [(60, 60), (80, 60), (80, 80), (60, 80)]
+
+    # list contains all the defects
+    defs_coord = [def1, def2, def3]
+    def_names = ['D1', 'D2', 'D3']  # names of defects
+    defs = define_defects(s1, s2, defs_coord, def_names)
+
+    # sample time indices where computationally intentionally features
+    # will be calculated.
+    t_stamps = [500, 550, 600]
 
     # identity features
     features_id = {}
     features_id['id'] = mat
 
     # compute gradient features
-    # print(compute_features_grad.__doc__)
+    print(compute_features_grad.__doc__)
     features_grad = {}
     features_grad = compute_features_grad(mat)
 
-    # identify time stamps of defects using feature correlation analysis
-    # print(id_timestamps.__doc__)
-    # time stamps where computationally intensive features will
-    # be calculated
-    # the following time stamps are the instants when A0 wave
-    # encounters the defects - this was determined by performing the
-    # step above
-    t_stamps = id_timestamps(features_grad, d1, d2, d3)
-
-    # delta time before or after the A0 wave encounters defect
-    del_t = 0
-    t_stamps = list(np.array(t_stamps) + del_t)
-
-    # setting based on email
-    t_stamps = [690, 550, 500]
-
     # compute spatial domain features
-    # print(compute_features_sd.__doc__)
+    print(compute_features_sd.__doc__)
     features_sd = {}
     features_sd = compute_features_sd(mat, t_stamps)
 
     # compute time domain features
-    # print(compute_features_td.__doc__)
+    print(compute_features_td.__doc__)
     features_td = {}
     features_td = compute_features_td(mat, t_stamps)
 
     # compute wavelet decomposition features
-    # print(compute_features_wav.__doc__)
+    print(compute_features_wav.__doc__)
     features_wav = {}
     features_wav = compute_features_wav(mat, t_stamps)
 
     # visualize feature
-    # print(visualize_features.__doc__)
-    visualize_features(mat, features_grad, r2, o2, 'r_grad', 650)
-    visualize_features(mat, features_grad, r2, o2, 'o_grad', 650)
+    print(visualize_features.__doc__)
+    t_idx = 650
+    visualize_features(mat, features_grad, s1_2d, s2_2d, 's1_grad',
+                       t_idx, t, units)
+    visualize_features(mat, features_grad, s1_2d, s2_2d, 's2_grad',
+                       t_idx, t, units)
 
     # combine features
     # print(combine_features.__doc__)
@@ -1072,58 +850,45 @@ def main():
     print('Total number of features is %d' % (len(features)))
 
     # normalize features
-    # print(normalize_features.__doc__)
+    print(normalize_features.__doc__)
     features = normalize_features(features, t_stamps)
 
-    # selecting features based on greedy forward selection
-    # print(feature_selection.__doc__)
-    # features = feature_selection(features, t_stamps, mat, d1, d2, d3)
-    selected_features = {}
-    for feature in ['rat_skew_10_100', 'o_grad', 'rat_med_mean_10']:
-        selected_features[feature] = features[feature]
-
-    features = selected_features
-    print('Total number of features after greedy feature '
-          'selection is %d' % (len(features)))
-
     # Outlier analysis using Mahalanobis distance
-    # print(outlier_mah.__doc__)
+    print(outlier_mah.__doc__)
     mah = {}
     mah = outlier_mah(features, t_stamps, pca=False, pca_var=0.95)
 
     # fit Isolation Forest model
-    # print(fit_isolationforest_model.__doc__)
+    print(fit_isolationforest_model.__doc__)
     iso = {}
     iso = fit_isolationforest_model(features, t_stamps,
                                     pca=False, pca_var=0.95)
 
     # scale frames between 0-1
-    # print(scale_frames.__doc__)
+    print(scale_frames.__doc__)
     mat = scale_frames(mat, t_stamps)
     mah = scale_frames(mah, t_stamps)
     iso = scale_frames(iso, t_stamps)
 
     # Defect detection metrics
-    # print(defect_detection_metrics.__doc__)
-    defect_detection_metrics(mat, mah, iso, r2, o2, t_stamps,
-                             d1, d2, d3, plot=True)
+    print(defect_detection_metrics.__doc__)
+    defect_detection_metrics(mat, mah, iso, s1_2d, s2_2d,
+                             defs, t_stamps, t, units, plot=True)
 
 
 if __name__ == '__main__':
     '''\n
-    Defect Detection and Quantification Toolbox using Python
+    Defect Detection and Quantification Toolbox (DDQT)
 
     A Python toolbox for -
       Reading in Matlab data
       Visualizing data
       Creating features in the time and spatial domain
-      Greedy feature selection
       Identifying defects using Mahalanobis distance and Outlier Forest
       Quantifying results using ROC curves
       Visualizing outcomes
 
-    TODO:
-    -
+    todo:
     '''
 
     main()
