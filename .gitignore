@@ -1,1 +1,6 @@
 LaserUltrasonicImaging/
+.DS_Store
+__pycache__/
+sample.mat
+temp.py
+todo
