@@ -22,10 +22,7 @@ from point_in_convex_polygon import Point, is_within_polygon
 def annotate_plots(ax, defs):
     '''\nAnnotate charts with locations of defects'''
 
-    # total number of defects
-    num_defs = len(defs)
-
-    for i in range(1, num_defs+1):
+    for i in range(1, len(defs)+1):
         ax.plot(defs[i]['s1_vertices'], defs[i]['s2_vertices'], color='red')
         ax.annotate(defs[i]['name'], xy=(np.mean(defs[i]['s1_vertices']),
                                          np.mean(defs[i]['s2_vertices'])))
@@ -214,7 +211,7 @@ def scale_frames(arr, t_stamps):
     return outarr
 
 
-def fit_isolationforest_model(features, t_stamps, pca, pca_var):
+def fit_isolationforest_model(features, t_stamps, pca_var):
     '''\nFit Isolation Forest model'''
 
     # initialize the model with 15% outliers
@@ -233,13 +230,18 @@ def fit_isolationforest_model(features, t_stamps, pca, pca_var):
         for counter, feature in enumerate(features):
             X[:, counter] = np.ravel(features[feature][t_idx, :, :])
 
-        # if PCA is required the flag should be set to True
-        if pca:
+        # if PCA is required the parameter will be less than 1
+        if pca_var < 1.0:
             # Standardizing the features before performing PCA
             X = StandardScaler().fit_transform(X)
             # perform PCA to reduce dimensionality
             pca = PCA(n_components=pca_var)
             X = pca.fit_transform(X)
+
+            # if PCA is performed
+            # number of components needed to explain variance
+            print('PCA: Explained variance: %0.2f%% \nfeatures reqd: %d' %
+                  (pca_var*100, X.shape[1]))
 
         # fit the Isolation Forest model
         clf.fit(X)
@@ -254,7 +256,7 @@ def fit_isolationforest_model(features, t_stamps, pca, pca_var):
     return iso
 
 
-def outlier_mah(features, t_stamps, pca, pca_var):
+def outlier_mah(features, t_stamps, pca_var):
     '''\nMahalanobis distance to identify outliers'''
 
     # create an empty numpy array to hold results
@@ -271,13 +273,18 @@ def outlier_mah(features, t_stamps, pca, pca_var):
         for counter, feature in enumerate(features):
             X[:, counter] = np.ravel(features[feature][t_idx, :, :])
 
-        # if PCA is required the flag should be set to True
-        if pca:
+        # if PCA is required the parameter will be less than 1
+        if pca_var < 1.0:
             # Standardizing the features before performing PCA
             X = StandardScaler().fit_transform(X)
             # perform PCA to reduce dimensionality
             pca = PCA(n_components=pca_var)
             X = pca.fit_transform(X)
+
+            # if PCA is performed
+            # number of components needed to explain variance
+            print('PCA: Explained variance: %0.2f%% \nfeatures reqd: %d' %
+                  (pca_var*100, X.shape[1]))
 
         # compute mean, covariance and covariance inverse
         mu = np.mean(X, axis=0)
@@ -854,15 +861,18 @@ def main():
     features = normalize_features(features, t_stamps)
 
     # Outlier analysis using Mahalanobis distance
+    # if PCA is required to trim features, set pca_var to the desired
+    # explained varaince level - in this example, 90% variance is desired
     print(outlier_mah.__doc__)
     mah = {}
-    mah = outlier_mah(features, t_stamps, pca=False, pca_var=0.95)
+    mah = outlier_mah(features, t_stamps, pca_var=0.9)
 
     # fit Isolation Forest model
+    # if PCA is required to trim features, set pca_var to the desired
+    # explained varaince level - in this example, 90% variance is desired
     print(fit_isolationforest_model.__doc__)
     iso = {}
-    iso = fit_isolationforest_model(features, t_stamps,
-                                    pca=False, pca_var=0.95)
+    iso = fit_isolationforest_model(features, t_stamps, pca_var=0.9)
 
     # scale frames between 0-1
     print(scale_frames.__doc__)
@@ -884,6 +894,7 @@ if __name__ == '__main__':
       Reading in Matlab data
       Visualizing data
       Creating features in the time and spatial domain
+      Feature reduction using PCA
       Identifying defects using Mahalanobis distance and Outlier Forest
       Quantifying results using ROC curves
       Visualizing outcomes
