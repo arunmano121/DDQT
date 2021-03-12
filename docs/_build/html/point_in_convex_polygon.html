@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>point_in_convex_polygon module &#8212; DDQT  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="DefectDetection module" href="DefectDetection.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-point_in_convex_polygon">
+<span id="point-in-convex-polygon-module"></span><h1>point_in_convex_polygon module<a class="headerlink" href="#module-point_in_convex_polygon" title="Permalink to this headline">¶</a></h1>
+<p>Helper module to determine if a point lies within a polygon</p>
+<p>original source:
+<a class="reference external" href="https://stackoverflow.com/questions/2752725/finding-whether-a-point-lies-inside-a-rectangle-or-not">https://stackoverflow.com/questions/2752725/finding-whether-a-point-lies-inside-a-rectangle-or-not</a></p>
+<p><a class="reference external" href="https://algorithmtutor.com/Computational-Geometry/Check-if-a-point-is-inside-a-polygon/">https://algorithmtutor.com/Computational-Geometry/Check-if-a-point-is-inside-a-polygon/</a></p>
+<p>Modified for use.</p>
+<dl class="py class">
+<dt id="point_in_convex_polygon.Point">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">point_in_convex_polygon.</span></code><code class="sig-name descname"><span class="pre">Point</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#point_in_convex_polygon.Point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Helper Point class</p>
+<p>Point class to define a point and a helper function to determine if
+the point lies with a polygon.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="point_in_convex_polygon.is_within_polygon">
+<code class="sig-prename descclassname"><span class="pre">point_in_convex_polygon.</span></code><code class="sig-name descname"><span class="pre">is_within_polygon</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">polygon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#point_in_convex_polygon.is_within_polygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if a point lies withinthe polygon</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p>polygon: polygon definition using a set of points</p></li>
+<li><p>point: a single point</p></li>
+</ul>
+<p>Returns:</p>
+<ul class="simple">
+<li><p>True/False: Depending on if point lies within polygon</p></li>
+</ul>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">DDQT</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">DefectDetectonToolbox</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="DefectDetection.html">DefectDetection module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">point_in_convex_polygon module</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">point_in_convex_polygon module</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">DefectDetectonToolbox</a><ul>
+      <li>Previous: <a href="DefectDetection.html" title="previous chapter">DefectDetection module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Arun Manohar.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/point_in_convex_polygon.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,465 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DefectDetection module &#8212; DDQT  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="point_in_convex_polygon module" href="point_in_convex_polygon.html" />
+    <link rel="prev" title="DefectDetectonToolbox" href="modules.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-DefectDetection">
+<span id="defectdetection-module"></span><h1>DefectDetection module<a class="headerlink" href="#module-DefectDetection" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="DefectDetection.annotate_plots">
+<code class="sig-prename descclassname"><span class="pre">DefectDetection.</span></code><code class="sig-name descname"><span class="pre">annotate_plots</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DefectDetection.annotate_plots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Annotate charts with locations of defects</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p>ax: plot axis</p></li>
+<li><p>defs: dictionary containing defect parameters</p></li>
+</ul>
+<p>Returns:</p>
+<ul class="simple">
+<li><p>None</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt id="DefectDetection.combine_features">
+<code class="sig-prename descclassname"><span class="pre">DefectDetection.</span></code><code class="sig-name descname"><span class="pre">combine_features</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feature_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DefectDetection.combine_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combine all features from different methods into one single dict</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>feature_list: list containing all entries of input features that need</dt><dd><p>to be concatenated</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Returns:</p>
+<ul class="simple">
+<li><p>features: feature dictionary that contains all the input features</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt id="DefectDetection.compute_features_grad">
+<code class="sig-prename descclassname"><span class="pre">DefectDetection.</span></code><code class="sig-name descname"><span class="pre">compute_features_grad</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DefectDetection.compute_features_grad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates spatial and temporal gradients</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p>mat: raw data</p></li>
+</ul>
+<p>Returns:</p>
+<ul class="simple">
+<li><p>features_grad: dictionary containing spatial and temporal
+gradient features</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt id="DefectDetection.compute_features_sd">
+<code class="sig-prename descclassname"><span class="pre">DefectDetection.</span></code><code class="sig-name descname"><span class="pre">compute_features_sd</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_stamps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DefectDetection.compute_features_sd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates spatial features at every location and time stamp</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p>mat: raw data</p></li>
+<li><p>t_stamps: time stamps at which spatial domain features are calculated</p></li>
+</ul>
+<p>Returns:</p>
+<ul class="simple">
+<li><p>features_sd: dictionary containing spatial domain features</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt id="DefectDetection.compute_features_td">
+<code class="sig-prename descclassname"><span class="pre">DefectDetection.</span></code><code class="sig-name descname"><span class="pre">compute_features_td</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_stamps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DefectDetection.compute_features_td" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculating temporal features at every spatial location</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p>mat: raw data</p></li>
+<li><p>t_stamps: time stamps at which time domain features are calculated</p></li>
+</ul>
+<p>Returns:</p>
+<ul class="simple">
+<li><p>features_td: dictionary containing time domain features</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt id="DefectDetection.compute_features_wav">
+<code class="sig-prename descclassname"><span class="pre">DefectDetection.</span></code><code class="sig-name descname"><span class="pre">compute_features_wav</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_stamps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DefectDetection.compute_features_wav" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates wavelet transformed features at every location</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p>mat: raw data</p></li>
+<li><p>t_stamps: time stamps at which wavelet features are calculated</p></li>
+</ul>
+<p>Returns:</p>
+<ul class="simple">
+<li><p>features_wav: dictionary containing wavelet features</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt id="DefectDetection.defect_detection_metrics">
+<code class="sig-prename descclassname"><span class="pre">DefectDetection.</span></code><code class="sig-name descname"><span class="pre">defect_detection_metrics</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mah</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iso</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s1_2d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s2_2d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_stamps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DefectDetection.defect_detection_metrics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quantification of defect detection, and plotting the results</p>
+<p>True-Positive Rate (TPR), False-Positive Rate (FPR), Receiver Operating
+Curves (ROC) are calculated for the raw data, Mahalanobis distance and
+result of Isolation Forest method. In addition, Area Under Curve (AUC)
+is also calculated to quantify the performance. Often, performance in
+terms of higher TPR is desired at lower FPR. To aid this, TPR values
+are calculated at 2%, 5% and 10% FPR. Further, the results are presented
+graphically if needed.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p>mat: raw data</p></li>
+<li><p>mah: result of performing Mahalanobis distance</p></li>
+<li><p>iso: result of performing Isolation Forest algorithm</p></li>
+<li><p>s1_2d: 2D meshgrid representation of s1 axis</p></li>
+<li><p>s2_2d: 2D meshgrid representation of s2 axis</p></li>
+<li><p>defs: dictionary containing defect parameters</p></li>
+<li><dl class="simple">
+<dt>t_stamps: time stamps at which features were calculated and where</dt><dd><p>results are desired</p>
+</dd>
+</dl>
+</li>
+<li><p>t: time coordinates</p></li>
+<li><p>units: units of the different dimensions</p></li>
+<li><p>plot: Boolean that indicate if plots are needed to visualize output</p></li>
+</ul>
+<p>Returns:</p>
+<ul class="simple">
+<li><p>None</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt id="DefectDetection.define_defects">
+<code class="sig-prename descclassname"><span class="pre">DefectDetection.</span></code><code class="sig-name descname"><span class="pre">define_defects</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defs_coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">def_names</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DefectDetection.define_defects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define coordinates of defects</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p>s1: spatial axis 1</p></li>
+<li><p>s2: spatial axis 2</p></li>
+<li><dl class="simple">
+<dt>defs_coord: list containing all defect - each defect contains a list</dt><dd><p>of tuples containing the vertices of defect</p>
+</dd>
+</dl>
+</li>
+<li><p>def_names: dictionary containing the names of defects</p></li>
+</ul>
+<p>Returns:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>defs: dictionary containing all the necessary parameters of all</dt><dd><p>the defined defects</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt id="DefectDetection.fit_isolationforest_model">
+<code class="sig-prename descclassname"><span class="pre">DefectDetection.</span></code><code class="sig-name descname"><span class="pre">fit_isolationforest_model</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_stamps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pca_var</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DefectDetection.fit_isolationforest_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit Isolation Forest model</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p>features: dictionary containing all input features</p></li>
+<li><dl class="simple">
+<dt>t_stamps: time stamps at which features were calculated and where</dt><dd><p>results are desired</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>pca_var: contains the desired exaplained variance parameter, if less</dt><dd><p>than 1.0, PCA will be performed</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Returns:</p>
+<ul class="simple">
+<li><p>iso: contains the result of Isolation Forest model over the data</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt id="DefectDetection.main">
+<code class="sig-prename descclassname"><span class="pre">DefectDetection.</span></code><code class="sig-name descname"><span class="pre">main</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DefectDetection.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>All the subroutines will be called from here</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="DefectDetection.mean_filter">
+<code class="sig-prename descclassname"><span class="pre">DefectDetection.</span></code><code class="sig-name descname"><span class="pre">mean_filter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_sample</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DefectDetection.mean_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>performs mean filtering at each location</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p>mat: raw data</p></li>
+<li><p>t: time axis</p></li>
+<li><p>s1: spatial axis 1</p></li>
+<li><p>s2: spatial axis 2</p></li>
+<li><p>units: units of the different dimensions</p></li>
+<li><dl class="simple">
+<dt>size: number of elements in the mean filter. The higher, the more</dt><dd><p>elements are used in filtering and more aggresive the filtering</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>plot_sample: Boolean to indicate if time series plots are needed to</dt><dd><p>compare raw and filtered data</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Returns:</p>
+<ul class="simple">
+<li><p>filt_mat: mean filtered raw data based on kernel size</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt id="DefectDetection.normalize_features">
+<code class="sig-prename descclassname"><span class="pre">DefectDetection.</span></code><code class="sig-name descname"><span class="pre">normalize_features</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_stamps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DefectDetection.normalize_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize features</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p>features: dictionary containing all input features</p></li>
+<li><dl class="simple">
+<dt>t_stamps: time stamps at which features were calculated and where</dt><dd><p>results are desired</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Returns:</p>
+<ul class="simple">
+<li><p>features: dictionary containing all normalized features</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt id="DefectDetection.outlier_mah">
+<code class="sig-prename descclassname"><span class="pre">DefectDetection.</span></code><code class="sig-name descname"><span class="pre">outlier_mah</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_stamps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pca_var</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DefectDetection.outlier_mah" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mahalanobis distance to identify outliers</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p>features: dictionary containing all input features</p></li>
+<li><dl class="simple">
+<dt>t_stamps: time stamps at which features were calculated and where</dt><dd><p>results are desired</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>pca_var: contains the desired exaplained variance parameter, if less</dt><dd><p>than 1.0, PCA will be performed</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Returns:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>mah: contains the result of computing Mahalanobis distance over</dt><dd><p>the data</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt id="DefectDetection.read_matlab_data">
+<code class="sig-prename descclassname"><span class="pre">DefectDetection.</span></code><code class="sig-name descname"><span class="pre">read_matlab_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DefectDetection.read_matlab_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads in raw matlab data using scipy IO modules</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p>dataset: name of the Matlab dataset</p></li>
+<li><p>table: name of table within Matlab</p></li>
+</ul>
+<p>Returns:</p>
+<ul class="simple">
+<li><p>mat: matlab data that has been converted to numpy array</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt id="DefectDetection.scale_frames">
+<code class="sig-prename descclassname"><span class="pre">DefectDetection.</span></code><code class="sig-name descname"><span class="pre">scale_frames</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_stamps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DefectDetection.scale_frames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scale frames between 0-1 for better interpretability</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p>arr: input frame that needs to be scaled</p></li>
+<li><dl class="simple">
+<dt>t_stamps: time stamps at which features were calculated and where</dt><dd><p>results are desired</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Returns:</p>
+<ul class="simple">
+<li><p>outarr: scaled frame where the elements lie between 0-1</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt id="DefectDetection.visualize_features">
+<code class="sig-prename descclassname"><span class="pre">DefectDetection.</span></code><code class="sig-name descname"><span class="pre">visualize_features</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s1_2d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s2_2d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DefectDetection.visualize_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Visualize computed features</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p>mat: raw data</p></li>
+<li><p>features: dictionary containing input features</p></li>
+<li><p>s1_2d: 2D meshgrid representation of s1 axis</p></li>
+<li><p>s2_2d: 2D meshgrid representation of s2 axis</p></li>
+<li><p>feature: desired feature that needs to be visualized</p></li>
+<li><p>t_idx: time index at which visualization is needed</p></li>
+<li><p>units: units of the different dimensions</p></li>
+</ul>
+<p>Returns:</p>
+<ul class="simple">
+<li><p>None</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt id="DefectDetection.visualize_spatial_data">
+<code class="sig-prename descclassname"><span class="pre">DefectDetection.</span></code><code class="sig-name descname"><span class="pre">visualize_spatial_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s1_2d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s2_2d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_min_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_max_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">del_t_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DefectDetection.visualize_spatial_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Visualize spatial slices of data at certain time stamps</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p>mat: raw data</p></li>
+<li><p>t: time axis</p></li>
+<li><p>s1_2d: 2D meshgrid representation of s1 axis</p></li>
+<li><p>s2_2d: 2D meshgrid representation of s2 axis</p></li>
+<li><p>t_min_idx: lower bound time index for visualization</p></li>
+<li><p>t_max_idx: upper bound time index for visualization</p></li>
+<li><p>del_t_idx: time index steps for visualization</p></li>
+<li><p>units: units of the different dimensions</p></li>
+</ul>
+<p>Returns:</p>
+<ul class="simple">
+<li><p>None</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt id="DefectDetection.visualize_time_series">
+<code class="sig-prename descclassname"><span class="pre">DefectDetection.</span></code><code class="sig-name descname"><span class="pre">visualize_time_series</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DefectDetection.visualize_time_series" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pick 4 random spatial coordinates and chart the time-series</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p>mat: raw data</p></li>
+<li><p>t: time axis</p></li>
+<li><p>s1: spatial axis 1</p></li>
+<li><p>s2: spatial axis 2</p></li>
+<li><p>units: units of the different dimensions</p></li>
+</ul>
+<p>Returns:</p>
+<ul class="simple">
+<li><p>None</p></li>
+</ul>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">DDQT</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">DefectDetectonToolbox</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">DefectDetection module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="point_in_convex_polygon.html">point_in_convex_polygon module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="point_in_convex_polygon.html">point_in_convex_polygon module</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">DefectDetectonToolbox</a><ul>
+      <li>Previous: <a href="modules.html" title="previous chapter">DefectDetectonToolbox</a></li>
+      <li>Next: <a href="point_in_convex_polygon.html" title="next chapter">point_in_convex_polygon module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Arun Manohar.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/DefectDetection.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
