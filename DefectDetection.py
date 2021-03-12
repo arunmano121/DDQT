@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 __authors__ = 'Arun Manohar'
-__copyright__ = 'Copyright, Arun Manohar'
 __license__ = '3-clause BSD'
 __maintainer__ = 'Arun Manohar'
 __email__ = 'arunmano121@outlook.com'
@@ -29,12 +28,12 @@ def annotate_plots(ax, defs):
     '''Annotate charts with locations of defects
 
     Parameters:
-    ----------
+
     - ax: plot axis
     - defs: dictionary containing defect parameters
 
     Returns:
-    -------
+
     - None
     '''
 
@@ -63,7 +62,7 @@ def defect_detection_metrics(mat, mah, iso, s1_2d, s2_2d,
     graphically if needed.
 
     Parameters:
-    ----------
+
     - mat: raw data
     - mah: result of performing Mahalanobis distance
     - iso: result of performing Isolation Forest algorithm
@@ -77,7 +76,7 @@ def defect_detection_metrics(mat, mah, iso, s1_2d, s2_2d,
     - plot: Boolean that indicate if plots are needed to visualize output
 
     Returns:
-    -------
+
     - None
     '''
 
@@ -158,6 +157,7 @@ def defect_detection_metrics(mat, mah, iso, s1_2d, s2_2d,
         tpr_p10_iso = tpr_iso[fpr_p10_iso_idx]
 
         # Summarize results
+        print('\n')
         print('Time Index: %d' % (t_idx))
         print('FPR range:0.00-1.00  AUC Raw: %0.2f'
               '  AUC Mah: %0.2f  AUC Iso: %0.2f'
@@ -249,13 +249,13 @@ def scale_frames(arr, t_stamps):
     '''Scale frames between 0-1 for better interpretability
 
     Parameters:
-    ----------
+
     - arr: input frame that needs to be scaled
     - t_stamps: time stamps at which features were calculated and where
                 results are desired
 
     Returns:
-    -------
+
     - outarr: scaled frame where the elements lie between 0-1
     '''
 
@@ -279,7 +279,7 @@ def fit_isolationforest_model(features, t_stamps, pca_var):
     '''Fit Isolation Forest model
 
     Parameters:
-    ----------
+
     - features: dictionary containing all input features
     - t_stamps: time stamps at which features were calculated and where
                 results are desired
@@ -287,7 +287,7 @@ def fit_isolationforest_model(features, t_stamps, pca_var):
                than 1.0, PCA will be performed
 
     Returns:
-    -------
+
     - iso: contains the result of Isolation Forest model over the data
     '''
 
@@ -335,7 +335,7 @@ def outlier_mah(features, t_stamps, pca_var):
     '''Mahalanobis distance to identify outliers
 
     Parameters:
-    ----------
+
     - features: dictionary containing all input features
     - t_stamps: time stamps at which features were calculated and where
                 results are desired
@@ -343,7 +343,7 @@ def outlier_mah(features, t_stamps, pca_var):
                than 1.0, PCA will be performed
 
     Returns:
-    -------
+
     - mah: contains the result of computing Mahalanobis distance over
            the data
     '''
@@ -400,13 +400,13 @@ def normalize_features(features, t_stamps):
     '''Normalize features
 
     Parameters:
-    ----------
+
     - features: dictionary containing all input features
     - t_stamps: time stamps at which features were calculated and where
                 results are desired
 
     Returns:
-    -------
+
     - features: dictionary containing all normalized features
     '''
 
@@ -439,12 +439,12 @@ def combine_features(feature_list):
     '''Combine all features from different methods into one single dict
 
     Parameters:
-    ----------
+
     - feature_list: list containing all entries of input features that need
                     to be concatenated
 
     Returns:
-    -------
+
     - features: feature dictionary that contains all the input features
     '''
 
@@ -462,7 +462,7 @@ def visualize_features(mat, features, s1_2d, s2_2d, feature,
     '''Visualize computed features
 
     Parameters:
-    ----------
+
     - mat: raw data
     - features: dictionary containing input features
     - s1_2d: 2D meshgrid representation of s1 axis
@@ -472,7 +472,7 @@ def visualize_features(mat, features, s1_2d, s2_2d, feature,
     - units: units of the different dimensions
 
     Returns:
-    -------
+
     - None
     '''
 
@@ -499,12 +499,12 @@ def compute_features_wav(mat, t_stamps):
     '''Calculates wavelet transformed features at every location
 
     Parameters:
-    ----------
+
     - mat: raw data
     - t_stamps: time stamps at which wavelet features are calculated
 
     Returns:
-    -------
+
     - features_wav: dictionary containing wavelet features
     '''
 
@@ -512,8 +512,8 @@ def compute_features_wav(mat, t_stamps):
     features_wav = {}
 
     # ll is reconstructed from approximation
-    # lh is reconstructed from radial detail
-    # hl is reconstructed from theta detail
+    # lh is reconstructed from s1 direction detail
+    # hl is reconstructed from s2 direction detail
     # hh is reconstructed from diagonal detail
 
     features_wav['ll'] = np.zeros(mat.shape)
@@ -550,12 +550,12 @@ def compute_features_td(mat, t_stamps):
     '''Calculating temporal features at every spatial location
 
     Parameters:
-    ----------
+
     - mat: raw data
     - t_stamps: time stamps at which time domain features are calculated
 
     Returns:
-    -------
+
     - features_td: dictionary containing time domain features
     '''
 
@@ -681,12 +681,12 @@ def compute_features_sd(mat, t_stamps):
     '''Calculates spatial features at every location and time stamp
 
     Parameters:
-    ----------
+
     - mat: raw data
     - t_stamps: time stamps at which spatial domain features are calculated
 
     Returns:
-    -------
+
     - features_sd: dictionary containing spatial domain features
     '''
 
@@ -696,12 +696,12 @@ def compute_features_sd(mat, t_stamps):
     features_sd = {}
 
     # z val calculates the distance of obs from the mean of other obs
-    # present at same radius
-    features_sd['val_z_r'] = np.zeros(mat.shape)
+    # present at same s1
+    features_sd['val_z_s1'] = np.zeros(mat.shape)
 
     # z val calculates the distance of obs from the mean of other obs
-    # present at same theta
-    features_sd['val_z_o'] = np.zeros(mat.shape)
+    # present at same s2
+    features_sd['val_z_s2'] = np.zeros(mat.shape)
 
     # median of obs from in a surround 3x3 grid
     features_sd['med_3x3'] = np.zeros(mat.shape)
@@ -711,32 +711,36 @@ def compute_features_sd(mat, t_stamps):
 
     # iterate through different time stamps
     for t_idx in t_stamps:
-        j_mean_r = np.mean(mat[t_idx, :, :], axis=1)
-        j_mean_o = np.mean(mat[t_idx, :, :], axis=0)
-        j_std_r = np.std(mat[t_idx, :, :], axis=1)
-        j_std_o = np.std(mat[t_idx, :, :], axis=0)
+        j_mean_s1 = np.mean(mat[t_idx, :, :], axis=1)
+        j_mean_s2 = np.mean(mat[t_idx, :, :], axis=0)
+        j_std_s1 = np.std(mat[t_idx, :, :], axis=1)
+        j_std_s2 = np.std(mat[t_idx, :, :], axis=0)
 
         # Add an extra dimension in the last axis
-        j_mean_r = np.expand_dims(j_mean_r, axis=1)
-        j_mean_o = np.expand_dims(j_mean_o, axis=0)
-        j_std_r = np.expand_dims(j_std_r, axis=1)
-        j_std_o = np.expand_dims(j_std_o, axis=0)
+        j_mean_s1 = np.expand_dims(j_mean_s1, axis=1)
+        j_mean_s2 = np.expand_dims(j_mean_s2, axis=0)
+        j_std_s1 = np.expand_dims(j_std_s1, axis=1)
+        j_std_s2 = np.expand_dims(j_std_s2, axis=0)
 
-        features_sd['val_z_r'][t_idx, :, :] = \
-            (mat[t_idx, :, :] - j_mean_r) / j_std_r
+        features_sd['val_z_s1'][t_idx, :, :] = \
+            (mat[t_idx, :, :] - j_mean_s1) / j_std_s1
 
-        features_sd['val_z_o'][t_idx, :, :] = \
-            (mat[t_idx, :, :] - j_mean_o) / j_std_o
+        features_sd['val_z_s2'][t_idx, :, :] = \
+            (mat[t_idx, :, :] - j_mean_s2) / j_std_s2
 
-        for r_idx in range(1, mat.shape[1]-1):
-            for o_idx in range(1, mat.shape[2]-1):
-                features_sd['med_3x3'][t_idx, r_idx, o_idx] =\
-                    np.median(mat[t_idx, r_idx-1:r_idx+2, o_idx-1:o_idx+2])
+        for s1_idx in range(1, mat.shape[1]-1):
+            for s2_idx in range(1, mat.shape[2]-1):
+                features_sd['med_3x3'][t_idx, s1_idx, s2_idx] =\
+                    np.median(mat[t_idx,
+                                  s1_idx-1:s1_idx+2,
+                                  s2_idx-1:s2_idx+2])
 
-        for r_idx in range(2, mat.shape[1]-2):
-            for o_idx in range(2, mat.shape[2]-2):
-                features_sd['med_5x5'][t_idx, r_idx, o_idx] =\
-                    np.median(mat[t_idx, r_idx-2:r_idx+3, o_idx-2:o_idx+5])
+        for s1_idx in range(2, mat.shape[1]-2):
+            for s2_idx in range(2, mat.shape[2]-2):
+                features_sd['med_5x5'][t_idx, s1_idx, s2_idx] =\
+                    np.median(mat[t_idx,
+                                  s1_idx-2:s1_idx+3,
+                                  s2_idx-2:s2_idx+5])
 
     return features_sd
 
@@ -745,11 +749,11 @@ def compute_features_grad(mat):
     '''Calculates spatial and temporal gradients
 
     Parameters:
-    ----------
+
     - mat: raw data
 
     Returns:
-    -------
+
     - features_grad: dictionary containing spatial and temporal
       gradient features
     '''
@@ -780,7 +784,7 @@ def define_defects(s1, s2, defs_coord, def_names):
     '''Define coordinates of defects
 
     Parameters:
-    ----------
+
     - s1: spatial axis 1
     - s2: spatial axis 2
     - defs_coord: list containing all defect - each defect contains a list
@@ -788,7 +792,7 @@ def define_defects(s1, s2, defs_coord, def_names):
     - def_names: dictionary containing the names of defects
 
     Returns:
-    -------
+
     - defs: dictionary containing all the necessary parameters of all
             the defined defects
     '''
@@ -846,7 +850,7 @@ def mean_filter(mat, t, s1, s2, units, size, plot_sample):
     '''performs mean filtering at each location
 
     Parameters:
-    ----------
+
     - mat: raw data
     - t: time axis
     - s1: spatial axis 1
@@ -859,7 +863,7 @@ def mean_filter(mat, t, s1, s2, units, size, plot_sample):
 
 
     Returns:
-    -------
+
     - filt_mat: mean filtered raw data based on kernel size
     '''
 
@@ -893,6 +897,9 @@ def mean_filter(mat, t, s1, s2, units, size, plot_sample):
                 s2[s2_coord[0]], units['s2_units']))
         ax.grid()
 
+        plt.tight_layout()
+        plt.show()
+
     return filt_mat
 
 
@@ -901,7 +908,7 @@ def visualize_spatial_data(mat, t, s1_2d, s2_2d,
     '''Visualize spatial slices of data at certain time stamps
 
     Parameters:
-    ----------
+
     - mat: raw data
     - t: time axis
     - s1_2d: 2D meshgrid representation of s1 axis
@@ -912,7 +919,7 @@ def visualize_spatial_data(mat, t, s1_2d, s2_2d,
     - units: units of the different dimensions
 
     Returns:
-    -------
+
     - None
     '''
 
@@ -936,19 +943,19 @@ def visualize_spatial_data(mat, t, s1_2d, s2_2d,
     return
 
 
-def visualize_time_series(data, t, s1, s2, units):
+def visualize_time_series(mat, t, s1, s2, units):
     '''Pick 4 random spatial coordinates and chart the time-series
 
     Parameters:
-    ----------
-    - data: raw data
+
+    - mat: raw data
     - t: time axis
     - s1: spatial axis 1
     - s2: spatial axis 2
     - units: units of the different dimensions
 
     Returns:
-    -------
+
     - None
     '''
 
@@ -957,10 +964,10 @@ def visualize_time_series(data, t, s1, s2, units):
     s2_coord = np.random.randint(low=0, high=len(s2), size=4)
 
     # extract time series signals at the four random coordinates
-    sig1 = data[:, s1_coord[0], s2_coord[0]]
-    sig2 = data[:, s1_coord[1], s2_coord[1]]
-    sig3 = data[:, s1_coord[2], s2_coord[2]]
-    sig4 = data[:, s1_coord[3], s2_coord[3]]
+    sig1 = mat[:, s1_coord[0], s2_coord[0]]
+    sig2 = mat[:, s1_coord[1], s2_coord[1]]
+    sig3 = mat[:, s1_coord[2], s2_coord[2]]
+    sig4 = mat[:, s1_coord[3], s2_coord[3]]
 
     fig, ax = plt.subplots(nrows=2, ncols=2)
     fig.suptitle('Time series')
@@ -1003,12 +1010,12 @@ def read_matlab_data(dataset, table):
     '''Reads in raw matlab data using scipy IO modules
 
     Parameters:
-    ----------
+
     - dataset: name of the Matlab dataset
     - table: name of table within Matlab
 
     Returns:
-    -------
+
     - mat: matlab data that has been converted to numpy array
     '''
 
@@ -1021,6 +1028,7 @@ def main():
     '''All the subroutines will be called from here'''
 
     # load data
+    print('\n')
     print('Reading in raw matlab data using scipy IO modules...')
     # Example - this assumes a matlab dataset named defect.mat and the
     # table named rawData inside the dataset
@@ -1032,6 +1040,7 @@ def main():
     # the input dataset is assumed to contain a time axis and two spatial
     # coordinates - s1 and s2. Rearrange axes as necessary.
     [t_max, s1_max, s2_max] = mat.shape
+    print('\n')
     print('Shape of the data matrix')
     print('t_max: %d  s1_max: %d s2_max: %d' % (t_max, s1_max, s2_max))
 
@@ -1058,6 +1067,7 @@ def main():
     s1_2d, s2_2d = np.meshgrid(s1, s2, indexing='ij')
 
     # raw data visualization
+    print('\n')
     print('Pick 4 random spatial coordinates and chart the time-series...')
     visualize_time_series(mat, t, s1, s2, units)
 
@@ -1069,10 +1079,12 @@ def main():
                            t_min_idx, t_max_idx, del_t_idx, units)
 
     # time series filtering of data
+    print('\n')
     print('performing mean filtering at each spatial location...')
     mat = mean_filter(mat, t, s1, s2, units, size=20, plot_sample=True)
 
     # define defects
+    print('\n')
     print('Defining coordinates of defects...')
     # define as many defects as needed
     # each defect should contain the coordinates of the vertices
@@ -1088,33 +1100,38 @@ def main():
 
     # sample time indices where computationally intentionally features
     # will be calculated.
-    t_stamps = range(100, 1000, 100)
+    t_stamps = range(500, 800, 100)
 
     # identity features
     features_id = {}
     features_id['id'] = mat
 
     # compute gradient features
+    print('\n')
     print('Calculating spatial and temporal gradients...')
     features_grad = {}
     features_grad = compute_features_grad(mat)
 
     # compute spatial domain features
+    print('\n')
     print('Calculating spatial features at every location and time...')
     features_sd = {}
     features_sd = compute_features_sd(mat, t_stamps)
 
     # compute time domain features
+    print('\n')
     print('Calculating temporal features at every spatial location...')
     features_td = {}
     features_td = compute_features_td(mat, t_stamps)
 
     # compute wavelet decomposition features
+    print('\n')
     print('Calculating wavelet transformed features at every location...')
     features_wav = {}
     features_wav = compute_features_wav(mat, t_stamps)
 
     # visualize feature
+    print('\n')
     print('Visualizing computed features...')
     t_idx = 650
     visualize_features(mat, features_grad, s1_2d, s2_2d, 's1_grad',
@@ -1123,6 +1140,7 @@ def main():
                        t_idx, t, units)
 
     # combine features
+    print('\n')
     print('Combining all features from different methods into a dict...')
     feature_list = [features_id, features_grad, features_sd,
                     features_td, features_wav]
@@ -1131,12 +1149,14 @@ def main():
     print('Total number of features is %d' % (len(features)))
 
     # normalize features
+    print('\n')
     print('Normalize features...')
     features = normalize_features(features, t_stamps)
 
     # Outlier analysis using Mahalanobis distance
     # if PCA is required to trim features, set pca_var to the desired
     # explained varaince level - in this example, 90% variance is desired
+    print('\n')
     print('Mahalanobis distance to identify outliers...')
     mah = {}
     mah = outlier_mah(features, t_stamps, pca_var=0.9)
@@ -1144,11 +1164,13 @@ def main():
     # fit Isolation Forest model
     # if PCA is required to trim features, set pca_var to the desired
     # explained varaince level - in this example, 90% variance is desired
+    print('\n')
     print('Fit Isolation Forest model...')
     iso = {}
     iso = fit_isolationforest_model(features, t_stamps, pca_var=0.9)
 
     # scale frames between 0-1
+    print('\n')
     print('Scaling frames between 0-1 for better interpretability...')
     mat = scale_frames(mat, t_stamps)
     mah = scale_frames(mah, t_stamps)
@@ -1156,6 +1178,7 @@ def main():
 
     # Defect detection metrics
     print('Quantification of defect detection and plotting the results...')
+    print('\n')
     defect_detection_metrics(mat, mah, iso, s1_2d, s2_2d,
                              defs, t_stamps, t, units, plot=True)
 
