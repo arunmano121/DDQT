@@ -1,32 +1,27 @@
 '''Helper module to determine if a point lies within a polygon
 
-original source:
-https://stackoverflow.com/questions/2752725/finding-whether-a-point-lies-inside-a-rectangle-or-not
+Script is based on the following references -
 
-https://algorithmtutor.com/Computational-Geometry/Check-if-a-point-is-inside-a-polygon/
+Reference_1_.
 
-Modified for use.
+.. _Reference_1: https://stackoverflow.com/questions/2752725/finding-whether-a-point-lies-inside-a-rectangle-or-not
+
+Reference_2_.
+
+.. _Reference_2: https://algorithmtutor.com/Computational-Geometry/Check-if-a-point-is-inside-a-polygon/
 '''
 
 
 class Point:
-    '''Helper Point class
-
-    Point class to define a point and a helper function to determine if
-    the point lies with a polygon.
-    '''
+    '''Point class to define a point'''
 
     def __init__(self, s1, s2):
-        '''Initialization function for the class
+        '''Constructor method
 
-        Parameters:
-
-        - s1: s1 coordinate of point
-        - s2: s2 coordinate of point
-
-        Returns:
-
-        - None
+        :param s1: s1 coordinate of point
+        :type s1: float
+        :param s2: s2 coordinate of point
+        :type s2: float
         '''
 
         self.s1 = s1
@@ -36,16 +31,15 @@ class Point:
 
 
 def is_within_polygon(polygon, point):
-    '''Determine if a point lies withinthe polygon
+    '''Determine if a point lies within the polygon
 
-    Parameters:
+    :param polygon: polygon definition using a set of points
+    :type polygon: list of points
+    :param point: a single point
+    :type client: class:'Point'
 
-    - polygon: polygon definition using a set of points
-    - point: a single point
-
-    Returns:
-
-    - True/False: Depending on if point lies within polygon
+    :return: True/False: Depending on if point lies within polygon
+    :rtype: Bool
     '''
 
     A = []

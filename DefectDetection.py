@@ -29,12 +29,12 @@ def annotate_plots(ax, defs):
 
     Parameters:
 
-    - ax: plot axis
-    - defs: dictionary containing defect parameters
+    :param ax: plot axis
+    :type ax: axis object
+    :param defs: defect parameters
+    :type defs: dict
 
-    Returns:
-
-    - None
+    :return: None
     '''
 
     # iterate through number of defects, defect index starts at 1
@@ -61,23 +61,30 @@ def defect_detection_metrics(mat, mah, iso, s1_2d, s2_2d,
     are calculated at 2%, 5% and 10% FPR. Further, the results are presented
     graphically if needed.
 
-    Parameters:
+    :param mat: raw data - 3D `float` array
+    :type mat: ndarray
+    :param mah: result of performing Mahalanobis distance - 3D `float` array
+    :type mah: ndarray
+    :param iso: result of performing Isolation Forest algorithm - 3D
+        `float` array
+    :type iso: ndarray
+    :param s1_2d: 2D meshgrid representation of s1 axis
+    :type s1_2d: ndarray
+    :param s2_2d: 2D meshgrid representation of s2 axis
+    :type s2_2d: ndarray
+    :param defs: defect parameters
+    :type defs: dict
+    :param t_stamps: time stamps at which features were calculated and where
+        results are desired
+    :type t_stamps: list
+    :param t: time coordinates
+    :type t: list
+    :param units: units of the different dimensions
+    :type units: dict
+    :param plot: Boolean to indicate if plots are needed to visualize
+    :type plot: Bool
 
-    - mat: raw data
-    - mah: result of performing Mahalanobis distance
-    - iso: result of performing Isolation Forest algorithm
-    - s1_2d: 2D meshgrid representation of s1 axis
-    - s2_2d: 2D meshgrid representation of s2 axis
-    - defs: dictionary containing defect parameters
-    - t_stamps: time stamps at which features were calculated and where
-                results are desired
-    - t: time coordinates
-    - units: units of the different dimensions
-    - plot: Boolean that indicate if plots are needed to visualize output
-
-    Returns:
-
-    - None
+    :return: None
     '''
 
     # total number of defects
@@ -248,15 +255,14 @@ def defect_detection_metrics(mat, mah, iso, s1_2d, s2_2d,
 def scale_frames(arr, t_stamps):
     '''Scale frames between 0-1 for better interpretability
 
-    Parameters:
+    :param arr: input array that needs to be scaled
+    :type arr: ndarray
+    :param t_stamps: time stamps at which features were calculated and where
+        results are desired
+    :type t_stamps: list
 
-    - arr: input frame that needs to be scaled
-    - t_stamps: time stamps at which features were calculated and where
-                results are desired
-
-    Returns:
-
-    - outarr: scaled frame where the elements lie between 0-1
+    :return: outarr: scaled array where the elements lie between 0-1
+    :rtype: ndarray
     '''
 
     outarr = np.zeros(arr.shape)
@@ -278,17 +284,17 @@ def scale_frames(arr, t_stamps):
 def fit_isolationforest_model(features, t_stamps, pca_var):
     '''Fit Isolation Forest model
 
-    Parameters:
+    :param features: dictionary containing all input features
+    :type features: dict
+    :param t_stamps: time stamps at which features were calculated and where
+        results are desired
+    :type t_stamps: list
+    :param pca_var: contains the desired explained variance parameter,
+        if less than 1.0, PCA will be performed
+    :type pca_var: float
 
-    - features: dictionary containing all input features
-    - t_stamps: time stamps at which features were calculated and where
-                results are desired
-    - pca_var: contains the desired exaplained variance parameter, if less
-               than 1.0, PCA will be performed
-
-    Returns:
-
-    - iso: contains the result of Isolation Forest model over the data
+    :return: iso: result of Isolation Forest model over the data
+    :rtype: ndarray
     '''
 
     # initialize the model with 15% outliers
@@ -334,18 +340,18 @@ def fit_isolationforest_model(features, t_stamps, pca_var):
 def outlier_mah(features, t_stamps, pca_var):
     '''Mahalanobis distance to identify outliers
 
-    Parameters:
+    :param features: dictionary containing all input features
+    :type features: dict
+    :param t_stamps: time stamps at which features were calculated and where
+        results are desired
+    :type t_stamps: list
+    :param pca_var: contains the desired explained variance parameter,
+        if less than 1.0, PCA will be performed
+    :type pca_var: float
 
-    - features: dictionary containing all input features
-    - t_stamps: time stamps at which features were calculated and where
-                results are desired
-    - pca_var: contains the desired exaplained variance parameter, if less
-               than 1.0, PCA will be performed
-
-    Returns:
-
-    - mah: contains the result of computing Mahalanobis distance over
-           the data
+    :return: mah: contains the result of computing Mahalanobis distance over
+        the data
+    :rtype: ndarray
     '''
 
     # create an empty numpy array to hold results
@@ -399,15 +405,14 @@ def outlier_mah(features, t_stamps, pca_var):
 def normalize_features(features, t_stamps):
     '''Normalize features
 
-    Parameters:
+    :param features: dictionary containing all input features
+    :type features: dict
+    :param t_stamps: time stamps at which features were calculated and where
+        results are desired
+    :type t_stamps: list
 
-    - features: dictionary containing all input features
-    - t_stamps: time stamps at which features were calculated and where
-                results are desired
-
-    Returns:
-
-    - features: dictionary containing all normalized features
+    :return: features: dictionary containing all normalized features
+    :rtype: dict
     '''
 
     # iterate through the features
@@ -438,14 +443,12 @@ def normalize_features(features, t_stamps):
 def combine_features(feature_list):
     '''Combine all features from different methods into one single dict
 
-    Parameters:
+    :param feature_list: list containing all entries of input features
+        that need to be concatenated
+    :type feature_list: list
 
-    - feature_list: list containing all entries of input features that need
-                    to be concatenated
-
-    Returns:
-
-    - features: feature dictionary that contains all the input features
+    :return: features: feature dictionary containing all the input features
+    :rtype: dict
     '''
 
     # placeholder dictionary to hold all the features
@@ -461,19 +464,22 @@ def visualize_features(mat, features, s1_2d, s2_2d, feature,
                        t_idx, t, units):
     '''Visualize computed features
 
-    Parameters:
+    :param mat: raw data
+    :type mat: ndarray
+    :param features: dictionary containing input features
+    :type features: dict
+    :param s1_2d: 2D meshgrid representation of s1 axis
+    :type s1_2d: ndarray
+    :param s2_2d: 2D meshgrid representation of s2 axis
+    :type s2_2d: ndarray
+    :param feature: desired feature that needs to be visualized
+    :type feature: str
+    :param t_idx: time index at which visualization is needed
+    :type t_idx: int
+    :param units: units of the different dimensions
+    :type units: dict
 
-    - mat: raw data
-    - features: dictionary containing input features
-    - s1_2d: 2D meshgrid representation of s1 axis
-    - s2_2d: 2D meshgrid representation of s2 axis
-    - feature: desired feature that needs to be visualized
-    - t_idx: time index at which visualization is needed
-    - units: units of the different dimensions
-
-    Returns:
-
-    - None
+    :return: None
     '''
 
     fig, ax = plt.subplots(nrows=1, ncols=2)
@@ -498,14 +504,13 @@ def visualize_features(mat, features, s1_2d, s2_2d, feature,
 def compute_features_wav(mat, t_stamps):
     '''Calculates wavelet transformed features at every location
 
-    Parameters:
+    :param mat: raw data
+    :type mat: ndarray
+    :param t_stamps: time stamps at which wavelet features are calculated
+    :type t_stamps: list
 
-    - mat: raw data
-    - t_stamps: time stamps at which wavelet features are calculated
-
-    Returns:
-
-    - features_wav: dictionary containing wavelet features
+    :return: features_wav: dictionary containing wavelet features
+    :rtype: dict
     '''
 
     # initialize an empty dictionary to hold and return all features
@@ -549,14 +554,14 @@ def compute_features_wav(mat, t_stamps):
 def compute_features_td(mat, t_stamps):
     '''Calculating temporal features at every spatial location
 
-    Parameters:
+    :param mat: raw data
+    :type mat: ndarray
+    :param t_stamps: time stamps at which time domain features are
+        calculated
+    :type t_stamps: list
 
-    - mat: raw data
-    - t_stamps: time stamps at which time domain features are calculated
-
-    Returns:
-
-    - features_td: dictionary containing time domain features
+    :return: features_td: dictionary containing time domain features
+    :rtype: dict
     '''
 
     # all these time domain features are calculated at every spatial point
@@ -680,14 +685,14 @@ def compute_features_td(mat, t_stamps):
 def compute_features_sd(mat, t_stamps):
     '''Calculates spatial features at every location and time stamp
 
-    Parameters:
+    :param mat: raw data
+    :type mat: ndarray
+    :param t_stamps: time stamps at which time domain features are
+        calculated
+    :type t_stamps: list
 
-    - mat: raw data
-    - t_stamps: time stamps at which spatial domain features are calculated
-
-    Returns:
-
-    - features_sd: dictionary containing spatial domain features
+    :return: features_sd: dictionary containing spatial domain features
+    :rtype: dict
     '''
 
     # all these features are calculated in the spatial domain at every point
@@ -748,14 +753,12 @@ def compute_features_sd(mat, t_stamps):
 def compute_features_grad(mat):
     '''Calculates spatial and temporal gradients
 
-    Parameters:
+    :param mat: raw data
+    :type mat: ndarray
 
-    - mat: raw data
-
-    Returns:
-
-    - features_grad: dictionary containing spatial and temporal
-      gradient features
+    :return: features_grad: dictionary containing spatial and temporal
+        gradient features
+    :rtype: dict
     '''
 
     # initialize an empty dictionary to hold and return all features
@@ -783,18 +786,19 @@ def compute_features_grad(mat):
 def define_defects(s1, s2, defs_coord, def_names):
     '''Define coordinates of defects
 
-    Parameters:
+    :param s1: spatial axis 1
+    :type s1: list
+    :param s2: spatial axis 2
+    :type s2: list
+    :param defs_coord: list containing all defects - each defect contains
+        a list of tuples containing the vertices of defect
+    :type defs_coord: list
+    :param def_names: dictionary containing the names of defects
+    :type def_names: dict
 
-    - s1: spatial axis 1
-    - s2: spatial axis 2
-    - defs_coord: list containing all defect - each defect contains a list
-                  of tuples containing the vertices of defect
-    - def_names: dictionary containing the names of defects
-
-    Returns:
-
-    - defs: dictionary containing all the necessary parameters of all
-            the defined defects
+    :return: defs: dictionary containing all the necessary parameters of
+       all the defined defects
+    :rtype: dict
     '''
 
     # initialize empty dictionary to hold defect coordinates
@@ -849,22 +853,25 @@ def define_defects(s1, s2, defs_coord, def_names):
 def mean_filter(mat, t, s1, s2, units, size, plot_sample):
     '''performs mean filtering at each location
 
-    Parameters:
+    :param mat: raw data
+    :type mat: ndarray
+    :param t: time axis
+    :type t: list
+    :param s1: spatial axis 1
+    :type s1: list
+    :param s2: spatial axis 2
+    :type s2: list
+    :param units: units of the different dimensions
+    :type units: dict
+    :param size: number of elements to use in the mean filter. The higher,
+        the more aggresive the filtering
+    :type size: int
+    :param plot_sample: Boolean to indicate if time series plots are
+        needed to compare raw and filtered data
+    :type plot_sample: Bool
 
-    - mat: raw data
-    - t: time axis
-    - s1: spatial axis 1
-    - s2: spatial axis 2
-    - units: units of the different dimensions
-    - size: number of elements in the mean filter. The higher, the more
-            elements are used in filtering and more aggresive the filtering
-    - plot_sample: Boolean to indicate if time series plots are needed to
-                   compare raw and filtered data
-
-
-    Returns:
-
-    - filt_mat: mean filtered raw data based on kernel size
+    :return: filt_mat: mean filtered raw data based on kernel size
+    :rtype: ndarray
     '''
 
     filt_mat = np.zeros(mat.shape)
@@ -907,20 +914,24 @@ def visualize_spatial_data(mat, t, s1_2d, s2_2d,
                            t_min_idx, t_max_idx, del_t_idx, units):
     '''Visualize spatial slices of data at certain time stamps
 
-    Parameters:
+    :param mat: raw data
+    :type mat: ndarray
+    :param t: time axis
+    :type t: list
+    :param s1_2d: 2D meshgrid representation of s1 axis
+    :type s1_2d: ndarray
+    :param s2_2d: 2D meshgrid representation of s2 axis
+    :type s2_2d: ndarray
+    :param t_min_idx: lower bound time index for visualization
+    :type t_min_idx: int
+    :param t_max_idx: upper bound time index for visualization
+    :type t_max_idx: int
+    :param del_t_idx: time index steps for visualization
+    :type del_t_idx: int
+    :param units: units of the different dimensions
+    :type units: dict
 
-    - mat: raw data
-    - t: time axis
-    - s1_2d: 2D meshgrid representation of s1 axis
-    - s2_2d: 2D meshgrid representation of s2 axis
-    - t_min_idx: lower bound time index for visualization
-    - t_max_idx: upper bound time index for visualization
-    - del_t_idx: time index steps for visualization
-    - units: units of the different dimensions
-
-    Returns:
-
-    - None
+    :return: None
     '''
 
     # visualize data between t_min_idx - t_max_idx in steps of del_t_idx
@@ -946,17 +957,18 @@ def visualize_spatial_data(mat, t, s1_2d, s2_2d,
 def visualize_time_series(mat, t, s1, s2, units):
     '''Pick 4 random spatial coordinates and chart the time-series
 
-    Parameters:
+    :param mat: raw data
+    :type mat: ndarray
+    :param t: time axis
+    :type t: list
+    :param s1: spatial axis 1
+    :type s1: list
+    :param s2: spatial axis 2
+    :type s2: list
+    :param units: units of the different dimensions
+    :type units: dict
 
-    - mat: raw data
-    - t: time axis
-    - s1: spatial axis 1
-    - s2: spatial axis 2
-    - units: units of the different dimensions
-
-    Returns:
-
-    - None
+    :return: None
     '''
 
     # pick 4 random spatial coordinates along s1 and s2 axes
@@ -1009,14 +1021,13 @@ def visualize_time_series(mat, t, s1, s2, units):
 def read_matlab_data(dataset, table):
     '''Reads in raw matlab data using scipy IO modules
 
-    Parameters:
+    :param dataset: name of the Matlab dataset
+    :type dataset: ndarray
+    :param table: name of table within Matlab
+    :type table: str
 
-    - dataset: name of the Matlab dataset
-    - table: name of table within Matlab
-
-    Returns:
-
-    - mat: matlab data that has been converted to numpy array
+    :return: mat: matlab data that has been converted to numpy array
+    :rtype: ndarray
     '''
 
     # use scipy IO modules to read in matlab data
