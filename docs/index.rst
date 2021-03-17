@@ -1,4 +1,4 @@
-Defect Detection and Quanitification (DDQT) Documentation!
+Defect Detection and Quantification (DDQT) Documentation!
 ==========================================================
 
 .. toctree::
@@ -6,6 +6,10 @@ Defect Detection and Quanitification (DDQT) Documentation!
    :caption: Contents:
 
    modules
+   license
+   readme
+   getting_started
+   citation
 
 Indices and tables
 ==================

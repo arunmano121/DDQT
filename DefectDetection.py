@@ -27,8 +27,6 @@ from point_in_convex_polygon import Point, is_within_polygon
 def annotate_plots(ax, defs):
     '''Annotate charts with locations of defects
 
-    Parameters:
-
     :param ax: plot axis
     :type ax: axis object
     :param defs: defect parameters
@@ -1195,8 +1193,9 @@ def main():
 
 
 if __name__ == '__main__':
-    '''Defect Detection and Quantification Toolbox (DDQT)
-       Arun Manohar (2021)
+    '''
+    Defect Detection and Quantification Toolbox (DDQT)
+    Arun Manohar (2021)
 
     A Python toolbox for -
       Reading in Matlab data

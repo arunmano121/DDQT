@@ -1,14 +1,10 @@
 '''Helper module to determine if a point lies within a polygon
 
-Script is based on the following references -
+Script is based on Ref1_ and Ref2_.
 
-Reference_1_.
+.. _Ref1: https://stackoverflow.com/questions/2752725/finding-whether-a-point-lies-inside-a-rectangle-or-not
 
-.. _Reference_1: https://stackoverflow.com/questions/2752725/finding-whether-a-point-lies-inside-a-rectangle-or-not
-
-Reference_2_.
-
-.. _Reference_2: https://algorithmtutor.com/Computational-Geometry/Check-if-a-point-is-inside-a-polygon/
+.. _Ref2: https://algorithmtutor.com/Computational-Geometry/Check-if-a-point-is-inside-a-polygon/
 '''
 
 
