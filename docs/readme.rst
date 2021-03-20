@@ -1,4 +1,4 @@
-README
+Readme
 ======
 
 **Defect Detection and Quantification Toolbox (DDQT)**
@@ -22,6 +22,20 @@ improvements are:
 * Improvements in feature space
 * Improvements to defect detection algorithms
 * Coding enhancements
+* Documentation enhancements
+* Currently, only certain time stamps are used in calculating computationally
+  intensive features. There is scope to write more computationally efficient
+  code to handle more time stamps (if not everything...)
+* Possibility of including circular defects - currently, defects are defined
+  using polygon vertices. 
+
+If you would like to collaborate with me in improving this toolbox or if you
+would like to provide sample data, please reach out to me at
+
+::
+
+   >>>my_first_name = 'arun'
+   >>>print(str(my_first_name) + 'mano121@outlook.com')
 
 Feel free to fork and add any enhancements, and let me know if a pull request
 is needed to merge the changes. 

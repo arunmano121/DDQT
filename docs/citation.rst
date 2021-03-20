@@ -7,7 +7,7 @@ if you use this work in your research, please cite using;
 
     @misc{ArunManohar2021,
       author = {Manohar, A.},
-      title = {Defect Detection and Quantification Toolbox},
+      title = {Defect Detection and Quantification Toolbox (DDQT)},
       year = {2021},
       publisher = {GitHub},
       journal = {GitHub repository},
@@ -15,3 +15,4 @@ if you use this work in your research, please cite using;
       commit = {4f57d6a0e4c030202a07a60bc1bb1ed1544bf679}
     }
 
+Thank you!

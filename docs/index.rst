@@ -1,5 +1,5 @@
-Defect Detection and Quantification (DDQT) Documentation!
-==========================================================
+Defect Detection and Quantification Toolbox (DDQT) Documentation!
+=================================================================
 
 .. toctree::
    :maxdepth: 2
@@ -10,6 +10,7 @@ Defect Detection and Quantification (DDQT) Documentation!
    readme
    getting_started
    citation
+   contact
 
 Indices and tables
 ==================
