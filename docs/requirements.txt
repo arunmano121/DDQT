@@ -1,5 +1,5 @@
 scipy
 matplotlib
 numpy
-pywt
+PyWavelets
 sklearn

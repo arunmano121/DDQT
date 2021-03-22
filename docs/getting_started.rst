@@ -10,7 +10,7 @@ following dependencies.
 * `SciPy <https://www.scipy.org/#>`_
 * `Matplotlib <https://matplotlib.org>`_
 * `NumPy <https://numpy.org>`_
-* `pywt <https://github.com/PyWavelets/pywt>`_
+* `PyWavelets <https://github.com/PyWavelets/pywt>`_
 * `sklearn <https://sklearn.org>`_
 
 Installing
