@@ -1,16 +1,17 @@
-Defect Detection and Quantification Toolbox (DDQT) Documentation!
-=================================================================
+Defect Detection and Quantification Toolbox (DDQT)
+==================================================
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Welcome:
 
-   modules
-   license
    readme
    getting_started
    citation
+   modules
+   license
    contact
+
 
 Indices and tables
 ==================

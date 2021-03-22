@@ -39,3 +39,20 @@ would like to provide sample data, please reach out to me at
 
 Feel free to fork and add any enhancements, and let me know if a pull request
 is needed to merge the changes. 
+
+If you use this work in your research, please cite using;
+
+::
+
+    @software{ArunManohar_20210322,
+      author       = {Arun Manohar},
+      title        = {{Defect Detection and Quantification Toolbox (DDQT)}},
+      month        = mar,
+      year         = 2021,
+      publisher    = {Zenodo},
+      version      = {v0.1.00},
+      doi          = {},
+      url          = {}
+    } 
+
+Thank you!

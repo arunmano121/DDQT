@@ -5,14 +5,15 @@ if you use this work in your research, please cite using;
 
 ::
 
-    @misc{ArunManohar2021,
-      author = {Manohar, A.},
-      title = {Defect Detection and Quantification Toolbox (DDQT)},
-      year = {2021},
-      publisher = {GitHub},
-      journal = {GitHub repository},
-      howpublished = {\url{https://github.com/arunmano121/project-title}},
-      commit = {4f57d6a0e4c030202a07a60bc1bb1ed1544bf679}
-    }
+    @software{ArunManohar_20210322,
+      author       = {Arun Manohar},
+      title        = {{Defect Detection and Quantification Toolbox (DDQT)}},
+      month        = mar,
+      year         = 2021,
+      publisher    = {Zenodo},
+      version      = {v0.1.00},
+      doi          = {},
+      url          = {}
+    } 
 
 Thank you!
