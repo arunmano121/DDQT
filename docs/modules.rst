@@ -1,5 +1,5 @@
-DefectDetectonToolbox
-=====================
+Code Reference
+==============
 
 .. toctree::
    :maxdepth: 4
