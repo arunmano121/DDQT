@@ -256,7 +256,7 @@ useful in Machine Learning.
     features = normalize_features(features, t_stamps)
 
 Outlier analysis is perfomed using two methods - Mahalanobis distance and
-Outlier Forest. If PCA is desired to reduce input dimensionality, set
+Isolation Forest. If PCA is desired to reduce input dimensionality, set
 `pca_var` to the `Desired Variance` level. For example, if `pca_var` is set
 to 0.9, then it is implied that 90% variance is desired. Accordingly, PCA
 will choose the number of dimensions that are needed to achieve this. The

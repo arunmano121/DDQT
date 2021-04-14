@@ -1202,7 +1202,7 @@ if __name__ == '__main__':
       Visualizing data
       Creating features in the time and spatial domain
       Feature reduction using PCA
-      Identifying defects using Mahalanobis distance and Outlier Forest
+      Identifying defects using Mahalanobis distance and Isolation Forest
       Quantifying results using ROC curves
       Visualizing outcomes
     '''
