@@ -37,7 +37,7 @@ and `SHM`.
 # Statement of Need
 
 In the fields of `NDT` and `SHM`, experiments are performed using a variety of
-modalities like Ultrasound, Infrared Thermography, X-Rays, etc. [@bray]
+modalities like Ultrasound, Infrared Thermography, X-Rays, etc. [@bray].
 `Matlab` is often used to perform experiments. Typically, the resulting data
 is very often a 3D dataset comprising of time axis and 2D spatial axis. Once
 the data is obtained, a variety of visualization checks are performed.
@@ -70,11 +70,11 @@ instead of spending much time and effort on setting up the pipeline process.
 
 # Getting started
 
-A detailed description on how to get started using `DDQT` is shown at DDQT's
+A detailed description on how to get started using `DDQT` is at DDQT's
 [`readthedocs`](https://ddqt.readthedocs.io/en/latest/getting_started.html)
 page.
 
-Code reference is shown at DDQT's [`modules`](https://ddqt.readthedocs.io/en/latest/modules.html) page.
+Code reference is at DDQT's [`modules`](https://ddqt.readthedocs.io/en/latest/modules.html) page.
 
 
 # References
