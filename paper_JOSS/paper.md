@@ -15,8 +15,7 @@ authors:
     affiliation: 1
     orcid: 0000-0003-2446-5008
 affiliations:
-  - name: Department of Structural Engineering, University of California,
-    San Diego, CA 92037, USA
+  - name: Department of Structural Engineering, University of California, San Diego, CA 92037, USA
     index: 1
 date: 14 April 2021
 bibliography: paper.bib
@@ -71,10 +70,11 @@ instead of spending much time and effort on setting up the pipeline process.
 
 # Getting started
 
-A detailed description on how to get started using `DDQT` is shown at [DDQT's
-`readthedocs` page](https://ddqt.readthedocs.io/en/latest/getting_started.html).
+A detailed description on how to get started using `DDQT` is shown at DDQT's
+[`readthedocs`](https://ddqt.readthedocs.io/en/latest/getting_started.html)
+page.
 
-Code reference is shown at [DDQT's `modules` page](https://ddqt.readthedocs.io/en/latest/modules.html).
+Code reference is shown at DDQT's [`modules`](https://ddqt.readthedocs.io/en/latest/modules.html) page.
 
 
 # References
