@@ -11,16 +11,15 @@ tags:
   - Isolation Forest
   - Principal Component Analysis
 authors:
-  - affiliation: 1
-    name: Arun Manohar
+  - name: Arun Manohar
+    affiliation: 1
     orcid: 0000-0003-2446-5008
 affiliations:
-  - index: 1
-    name: Department of Structural Engineering, University of California,
+  - name: Department of Structural Engineering, University of California,
     San Diego, CA 92037, USA
+    index: 1
 date: 14 April 2021
 bibliography: paper.bib
-
 ---
 
 # Summary
@@ -73,11 +72,9 @@ instead of spending much time and effort on setting up the pipeline process.
 # Getting started
 
 A detailed description on how to get started using `DDQT` is shown at [DDQT's
-`readthedocs` page]
-(https://ddqt.readthedocs.io/en/latest/getting_started.html).
+`readthedocs` page](https://ddqt.readthedocs.io/en/latest/getting_started.html).
 
-Code reference is shown at [DDQT's `modules` page]
-(https://ddqt.readthedocs.io/en/latest/modules.html).
+Code reference is shown at [DDQT's `modules` page](https://ddqt.readthedocs.io/en/latest/modules.html).
 
 
 # References
