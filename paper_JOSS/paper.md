@@ -1,25 +1,26 @@
 ---
 title: 'Defect Detection and Quantification Toolbox (DDQT)'
-authors:
-- affiliation: 1
-  name: Arun Manohar
-  orcid: 0000-0003-2446-5008
-date: "14 April 2021"
-bibliography: paper.bib
 tags:
-- Python
-- Nondestructive Testing
-- Structural Health Monitoring
-- Defect Detection
-- Defect Quantification
-- Outlier Detection
-- Mahalanobis Distance
-- Isolation Forest
-- Principal Component Analysis
+  - Python
+  - Nondestructive Testing
+  - Structural Health Monitoring
+  - Defect Detection
+  - Defect Quantification
+  - Outlier Detection
+  - Mahalanobis Distance
+  - Isolation Forest
+  - Principal Component Analysis
+authors:
+  - affiliation: 1
+    name: Arun Manohar
+    orcid: 0000-0003-2446-5008
 affiliations:
-- index: 1
-  name: Department of Structural Engineering, University of California,
-  San Diego, CA 92037, USA
+  - index: 1
+    name: Department of Structural Engineering, University of California,
+    San Diego, CA 92037, USA
+date: 14 April 2021
+bibliography: paper.bib
+
 ---
 
 # Summary
