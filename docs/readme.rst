@@ -5,29 +5,30 @@ Readme
 
 Arun Manohar (2021)
 
-The main goals of this Python toolbox are:
+**`DDQT` can be used for;**
 
-* Reading in Matlab data
-* Visualizing data
-* Creating features in the time and spatial domain
-* Feature reduction using PCA
-* Identifying defects using Mahalanobis distance and Isolation Forest
-* Quantifying results using ROC curves
-* Visualizing outcomes
+  * Reading in Matlab data
+  * Visualizing data
+  * Creating features in the time and spatial domain
+  * Feature reduction using PCA
+  * Identifying defects using Mahalanobis distance and Isolation Forest
+  * Quantifying results using ROC curves
+  * Visualizing outcomes
 
 There are numerous avenues to enhance this toolbox. I welcome any
-contributions to this program. Some possible areas that could use
-improvements are:
+contributions to this program. **Some possible areas that could use
+improvements are;**
 
-* Improvements in feature space
-* Improvements to defect detection algorithms
-* Coding enhancements
-* Documentation enhancements
-* Currently, only certain time stamps are used in calculating computationally
-  intensive features. There is scope to write more computationally efficient
-  code to handle more time stamps (if not everything...)
-* Possibility of including circular defects - currently, defects are defined
-  using polygon vertices. 
+  * Improvements in feature space
+  * Improvements to defect detection algorithms
+  * Coding enhancements
+  * Documentation enhancements
+  * Currently, only certain time stamps are used in calculating
+    computationally intensive features. There is scope to write more
+    computationally efficient code to handle more time stamps (if not
+    everything...)
+  * Possibility of including circular defects - currently, defects are
+    defined using polygon vertices
 
 If you would like to collaborate with me in improving this toolbox or if you
 would like to provide sample data, please reach out to me at
