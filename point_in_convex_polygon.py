@@ -12,12 +12,19 @@ class Point:
     '''Point class to define a point'''
 
     def __init__(self, s1, s2):
-        '''Constructor method
+        '''
+        Constructor method
 
-        :param s1: s1 coordinate of point
-        :type s1: float
-        :param s2: s2 coordinate of point
-        :type s2: float
+        Parameters
+        ----------
+        s1: float
+            s1 coordinate of point
+        s2: float
+            s2 coordinate of point
+
+        Returns
+        -------
+        None
         '''
 
         self.s1 = s1
@@ -27,15 +34,20 @@ class Point:
 
 
 def is_within_polygon(polygon, point):
-    '''Determine if a point lies within the polygon
+    '''
+    Determine if a point lies within the polygon
 
-    :param polygon: polygon definition using a set of points
-    :type polygon: list of points
-    :param point: a single point
-    :type client: class:'Point'
+    Parameters
+    ----------
+    polygon: list of points
+        polygon definition using a set of points
+    point: class:'Point'
+        a single point
 
-    :return: True/False: Depending on if point lies within polygon
-    :rtype: Bool
+    Returns
+    -------
+    True/False: Bool
+        Depending on if point lies within polygon
     '''
 
     A = []
