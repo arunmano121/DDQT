@@ -101,4 +101,5 @@ Thank you!
    citation
    modules
    license
+   acknowledgements
    contact
